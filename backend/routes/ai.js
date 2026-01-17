@@ -10,20 +10,14 @@ const Vaccination = require('../models/Vaccination');
 router.use(protect);
 
 // N8N Webhook URLs for different modes
-const N8N_AGENTS = {
-    general: process.env.N8N_GENERAL_AGENT_URL || 'http://localhost:5678/webhook/carebuddy-agent',
-    tracking: process.env.N8N_TRACKING_AGENT_URL || 'http://localhost:5678/webhook/tracking-agent',
-    vaccination: process.env.N8N_VACCINATION_AGENT_URL || 'http://localhost:5678/webhook/vaccination-agent',
-    nutrition: process.env.N8N_NUTRITION_AGENT_URL || 'http://localhost:5678/webhook/nutrition-agent',
-    health: process.env.N8N_HEALTH_AGENT_URL || 'http://localhost:5678/webhook/health-agent'
-};
+const N8N_CHATBOT_URL = process.env.N8N_CHATBOT_URL || 'http://localhost:5678/webhook/tinystep-chatbot';
 
 // @route   POST /api/ai/chat
-// @desc    Send message to AI assistant via n8n webhook
-// @access  Private
+// @desc    Send message to AI chatbot via n8n webhook
+// @access  Private (or public with context)
 router.post('/chat', async (req, res) => {
     try {
-        const { message, babyId, mode } = req.body;
+        const { message, context, conversationHistory } = req.body;
 
         if (!message) {
             return res.status(400).json({
@@ -32,22 +26,53 @@ router.post('/chat', async (req, res) => {
             });
         }
 
+        // Get user ID from auth or use anonymous
+        const userId = req.user?._id?.toString() || 'anonymous';
+
         // Prepare payload for n8n webhook
         const payload = {
-            userId: req.user._id.toString(),
-            userName: req.user.name,
-            message,
-            babyId,
-            mode: mode || 'general',
+            userId: userId,
+            userName: req.user?.name || 'Guest',
+            message: message,
+            context: context || {},
+            conversationHistory: conversationHistory || [],
             timestamp: new Date().toISOString()
         };
 
-        // Select appropriate n8n webhook based on mode
-        const n8nUrl = N8N_AGENTS[mode] || N8N_AGENTS.general;
-        
         try {
-            const response = await axios.post(n8nUrl, payload, {
+            const response = await axios.post(N8N_CHATBOT_URL, payload, {
                 headers: {
+                    'Content-Type': 'application/json'
+                },
+                timeout: 30000 // 30 seconds timeout
+            });
+
+            res.json({
+                success: true,
+                data: response.data?.data || response.data
+            });
+
+        } catch (n8nError) {
+            console.error('N8N webhook error:', n8nError.message);
+            
+            // Fallback response if n8n is unavailable
+            res.json({
+                success: true,
+                data: {
+                    response: "I'm currently experiencing technical difficulties. Please try again in a moment. For urgent concerns, please consult with your healthcare provider.",
+                    fallback: true
+                }
+            });
+        }
+
+    } catch (error) {
+        console.error('AI chat error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error processing chat request'
+        });
+    }
+});
                     'Content-Type': 'application/json'
                 },
                 timeout: 30000 // 30 seconds timeout

@@ -1,0 +1,180 @@
+{
+  "name": "TinyStep AI Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tinystep-chatbot",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-node",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "tinystep-chatbot"
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "collection": "users",
+        "query": "={{ JSON.stringify({ _id: $json.body.userId }) }}"
+      },
+      "id": "get-user-data",
+      "name": "Get User Data",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1,
+      "position": [440, 200]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "collection": "babies",
+        "query": "={{ JSON.stringify({ parent: $json.body.userId }) }}"
+      },
+      "id": "get-baby-data",
+      "name": "Get Baby Data",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1,
+      "position": [440, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and structure user context\nconst message = $input.item.json.body.message;\nconst careMode = $input.item.json.body.context?.careMode || 'general';\nconst conversationHistory = $input.item.json.body.conversationHistory || [];\n\n// Get user data from previous node\nconst userData = $node[\"Get User Data\"].json[0] || {};\nconst babyData = $node[\"Get Baby Data\"].json || [];\n\n// Build context for AI\nlet contextInfo = '';\n\nif (careMode === 'planning') {\n  contextInfo = `User is in Planning Mode (Fertility Planning).\n- Last Period Date: ${userData.lastPeriodDate || 'Not set'}\n- Cycle Length: ${userData.cycleLength || 28} days\n- Period Duration: ${userData.periodDuration || 5} days`;\n  \n} else if (careMode === 'pregnancy') {\n  const lmpDate = userData.lastPeriodDate || userData.lmpDate;\n  let weeksPregnant = 'Unknown';\n  \n  if (lmpDate) {\n    const lmp = new Date(lmpDate);\n    const today = new Date();\n    const daysPregnant = Math.floor((today - lmp) / (1000 * 60 * 60 * 24));\n    weeksPregnant = Math.floor(daysPregnant / 7);\n  }\n  \n  contextInfo = `User is in Pregnancy Mode.\n- Weeks Pregnant: ${weeksPregnant}\n- Expected Due Date: ${userData.expectedDueDate || 'Not set'}\n- LMP Date: ${lmpDate || 'Not set'}`;\n  \n} else if (careMode === 'baby-care') {\n  if (babyData.length > 0) {\n    const babies = babyData.map(baby => {\n      const ageInMonths = baby.dateOfBirth ? \n        Math.floor((new Date() - new Date(baby.dateOfBirth)) / (1000 * 60 * 60 * 24 * 30)) : \n        'Unknown';\n      return `  - ${baby.name}: ${ageInMonths} months old, Gender: ${baby.gender || 'Not specified'}`;\n    }).join('\\n');\n    \n    contextInfo = `User is in Baby Care Mode with ${babyData.length} baby/babies:\\n${babies}`;\n  } else {\n    contextInfo = 'User is in Baby Care Mode but no babies registered yet.';\n  }\n}\n\n// Build system prompt\nconst systemPrompt = `You are TinyStep AI Assistant, a helpful and caring AI that provides guidance for parents and expecting parents.\n\nCurrent User Context:\n${contextInfo}\n\nYour role:\n- Provide accurate, evidence-based information about pregnancy, baby care, and parenting\n- Be empathetic, supportive, and encouraging\n- Always recommend consulting healthcare professionals for medical concerns\n- Keep responses concise (2-4 paragraphs) unless asked for details\n- Use emojis occasionally to be friendly (but not excessive)\n- Never provide medical diagnosis - only educational information\n\nImportant:\n- If asked about current stage/mode, use the context above\n- For pregnancy: provide week-specific information\n- For baby care: provide age-appropriate guidance\n- For planning: provide fertility and conception tips\n\nFormat responses in a conversational, friendly tone.`;\n\n// Build conversation messages\nconst messages = [\n  { role: 'system', content: systemPrompt }\n];\n\n// Add conversation history\nconversationHistory.slice(-6).forEach(msg => {\n  messages.push(msg);\n});\n\n// Add current user message\nmessages.push({ role: 'user', content: message });\n\nreturn {\n  json: {\n    messages: messages,\n    userMessage: message,\n    careMode: careMode,\n    userData: userData,\n    babyData: babyData\n  }\n};"
+      },
+      "id": "build-context",
+      "name": "Build AI Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "apiKey",
+        "resource": "chat",
+        "operation": "create",
+        "model": "gpt-3.5-turbo",
+        "messages": "={{ $json.messages }}",
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 500
+        }
+      },
+      "id": "openai-chat",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [840, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format the AI response\nconst aiResponse = $input.item.json.choices?.[0]?.message?.content || \n                   $input.item.json.output || \n                   'I apologize, but I encountered an issue. Please try again.';\n\nconst previousData = $node[\"Build AI Context\"].json;\n\nreturn {\n  json: {\n    success: true,\n    data: {\n      response: aiResponse,\n      timestamp: new Date().toISOString(),\n      careMode: previousData.careMode\n    }\n  }\n};"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion"const aiResponse = $input.item.json.choices?.[0]?.message?.content || 'I apologize, but I encountered an issue.';\nconst careMode = $node['Build Context'].json.careMode;\n\nreturn [{\n  json: {\n    success: true,\n    data: {\n      response: aiResponse,\n      timestamp: new Date().toISOString(),\n      careMode: careMode\n    }\n  }\n}];"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [104: "={{ $json }}"
+      },
+      "id": "webhook-response",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1240, 300]
+    }
+  ],
+  "connections": {
+    "Webhook - Receive Chat": {
+      "main": [
+        [
+          {
+            "node": "Get User Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Baby Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Data": {
+      "main": [
+        [
+          {
+            "node": "Build AI Context",
+            "type": "main",
+            "index": 0
+          }
+        ]": {
+      "main": [
+        [
+          {
+            "node": "Get User Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Baby Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Data": {
+      "main": [
+        [
+          {
+            "node": "Build Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Baby Data": {
+      "main": [
+        [
+          {
+            "node": "Build Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Context": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond

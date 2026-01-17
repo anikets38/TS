@@ -3,6 +3,8 @@
 // ================================
 
 let currentBaby = null;
+let lastFeedingTime = null;
+let updateTimeInterval = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     redirectIfNotAuthenticated();
@@ -10,7 +12,52 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserData();
     loadBabies();
     setTodayDate();
+    
+    // Start real-time updates
+    startLiveTimeUpdates();
 });
+
+// Start interval for live time updates
+function startLiveTimeUpdates() {
+    // Update every 30 seconds
+    updateTimeInterval = setInterval(() => {
+        updateActivityTimes();
+        updateNextFeedingTime();
+    }, 30000);
+}
+
+// Update activity times in real-time
+function updateActivityTimes() {
+    const activityItems = document.querySelectorAll('.activity-time');
+    activityItems.forEach(item => {
+        const timestamp = item.dataset.timestamp;
+        if (timestamp) {
+            item.textContent = formatTimeAgo(timestamp);
+        }
+    });
+}
+
+// Update next feeding time dynamically
+function updateNextFeedingTime() {
+    if (!lastFeedingTime) return;
+    
+    const nextFeedingElement = document.getElementById('nextFeeding');
+    if (!nextFeedingElement) return;
+    
+    // Calculate next feeding (typically 2-3 hours after last feeding)
+    const lastFeed = new Date(lastFeedingTime);
+    const nextFeed = new Date(lastFeed.getTime() + (3 * 60 * 60 * 1000)); // 3 hours
+    const now = new Date();
+    
+    if (nextFeed > now) {
+        nextFeedingElement.textContent = nextFeed.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+    } else {
+        nextFeedingElement.textContent = 'Now';
+    }
+}
 
 // Refresh dashboard when page becomes visible (user navigates back)
 document.addEventListener('visibilitychange', () => {
@@ -157,10 +204,33 @@ function displayAnalytics(data) {
         feedingTotal.textContent = data.feeding.totalToday || 0;
     }
     
+    // Store last feeding time for live updates
+    if (data.feeding.logs && data.feeding.logs.length > 0) {
+        lastFeedingTime = data.feeding.logs[0].time;
+    }
+    
     if (nextFeeding) {
         if (data.feeding.nextSuggestion) {
             const nextTime = new Date(data.feeding.nextSuggestion);
-            nextFeeding.textContent = nextTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            lastFeedingTime = data.feeding.logs && data.feeding.logs.length > 0 ? data.feeding.logs[0].time : null;
+            const now = new Date();
+            
+            if (nextTime > now) {
+                nextFeeding.textContent = nextTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            } else {
+                nextFeeding.textContent = 'Now';
+            }
+        } else if (lastFeedingTime) {
+            // Calculate next feeding based on last feeding (3 hours)
+            const lastFeed = new Date(lastFeedingTime);
+            const nextFeed = new Date(lastFeed.getTime() + (3 * 60 * 60 * 1000));
+            const now = new Date();
+            
+            if (nextFeed > now) {
+                nextFeeding.textContent = nextFeed.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            } else {
+                nextFeeding.textContent = 'Now';
+            }
         } else {
             nextFeeding.textContent = '--';
         }
@@ -347,7 +417,8 @@ function updateActivityList(data) {
             activities.push({
                 icon: '🍼',
                 title: `${log.type.charAt(0).toUpperCase() + log.type.slice(1)} feeding`,
-                time: formatTimeAgo(log.time)
+                time: formatTimeAgo(log.time),
+                timestamp: log.time
             });
         });
     }
@@ -359,7 +430,8 @@ function updateActivityList(data) {
             activities.push({
                 icon: '😴',
                 title: `Sleep session (${duration}h)`,
-                time: formatTimeAgo(log.startTime)
+                time: formatTimeAgo(log.startTime),
+                timestamp: log.startTime
             });
         });
     }
@@ -376,7 +448,7 @@ function updateActivityList(data) {
             <div class="activity-icon">${activity.icon}</div>
             <div class="activity-details">
                 <p class="activity-title">${activity.title}</p>
-                <p class="activity-time">${activity.time}</p>
+                <p class="activity-time" data-timestamp="${activity.timestamp}">${activity.time}</p>
             </div>
         `;
         activityList.appendChild(item);
@@ -427,6 +499,24 @@ function showEmptyState() {
     document.getElementById('dashboardContent').style.display = 'none';
     document.getElementById('emptyState').style.display = 'block';
 }
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (updateTimeInterval) {
+        clearInterval(updateTimeInterval);
+    }
+});
+
+// Edit baby profile
+function editBabyProfile(event) {
+    event.preventDefault();
+    if (currentBaby && currentBaby._id) {
+        window.location.href = `baby-profile.html?id=${currentBaby._id}`;
+    } else {
+        showToast('Please select a baby first', 'error');
+    }
+}
+
 // ================================
 // MILESTONE MANAGEMENT
 // ================================

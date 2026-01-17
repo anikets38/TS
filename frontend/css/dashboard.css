@@ -566,6 +566,23 @@
     .metric-grid {
         grid-template-columns: 1fr;
     }
+    
+    .dashboard-header {
+        padding: 1.5rem;
+    }
+    
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+    
+    .dashboard-subtitle {
+        font-size: 1rem;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -576,5 +593,26 @@
     .profile-info {
         flex-direction: column;
         text-align: center;
+    }
+    
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    .dashboard-header {
+        padding: 1rem;
+    }
+    
+    .dashboard-title {
+        font-size: 1.25rem;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .date-display {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
     }
 }

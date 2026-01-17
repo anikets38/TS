@@ -551,4 +551,20 @@
         flex-direction: column;
         text-align: center;
     }
+    
+    .dashboard-container {
+        padding: 0.75rem;
+    }
+    
+    .dashboard-header {
+        padding: 1rem;
+    }
+    
+    .dashboard-title {
+        font-size: 1.25rem;
+    }
+    
+    .baby-selector-card {
+        padding: 1rem;
+    }
 }

@@ -308,11 +308,20 @@
     
     .tabs {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
     
     .tab-btn {
         padding: var(--spacing-sm) var(--spacing-md);
         font-size: 0.9rem;
+    }
+    
+    .food-category {
+        padding: var(--spacing-lg);
+    }
+    
+    .category-header h3 {
+        font-size: 1.25rem;
     }
 }
 
@@ -322,17 +331,23 @@
     }
     
     .food-category {
-        padding: var(--spacing-lg);
+        padding: var(--spacing-md);
     }
     
     .info-banner {
         flex-direction: column;
         padding: var(--spacing-md);
     }
-}
-
-@media (max-width: 768px) {
-    .nutrition-grid {
-        grid-template-columns: 1fr;
+    
+    .banner-icon {
+        font-size: 1.25rem;
+    }
+    
+    .category-icon {
+        font-size: 2rem;
+    }
+    
+    .food-items {
+        gap: var(--spacing-xs);
     }
 }

@@ -30,7 +30,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ================================
 // API BASE URL
 // ================================
-const API_BASE_URL = 'https://ts-ypbn.onrender.com/api';
+// Use localhost for development, Render for production
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/api'
+    : 'https://ts-ypbn.onrender.com/api';
 
 // ================================
 // AUTH HELPER FUNCTIONS
@@ -129,6 +132,9 @@ async function updateNavigation() {
                                 <div class="profile-email">${response.data.email || ''}</div>
                             </div>
                             <div class="profile-divider"></div>
+                            <a href="/pages/profile.html" class="profile-menu-item">
+                                <span>👤</span> My Profile
+                            </a>
                             <a href="/pages/mode-selection.html?switch=true" class="profile-menu-item">
                                 <span>🔄</span> Switch Stage
                             </a>
@@ -154,6 +160,9 @@ async function updateNavigation() {
                                 <div class="profile-email">${response.data.email || ''}</div>
                             </div>
                             <div class="profile-divider"></div>
+                            <a href="/pages/profile.html" class="profile-menu-item">
+                                <span>👤</span> My Profile
+                            </a>
                             <a href="/pages/mode-selection.html?switch=true" class="profile-menu-item">
                                 <span>🔄</span> Switch Stage
                             </a>
@@ -183,6 +192,9 @@ async function updateNavigation() {
                                 <div class="profile-email">${response.data.email || ''}</div>
                             </div>
                             <div class="profile-divider"></div>
+                            <a href="/pages/profile.html" class="profile-menu-item">
+                                <span>👤</span> My Profile
+                            </a>
                             <a href="/pages/mode-selection.html?switch=true" class="profile-menu-item">
                                 <span>🔄</span> Switch Stage
                             </a>
@@ -208,6 +220,9 @@ async function updateNavigation() {
                                 <div class="profile-email">${response.data.email || ''}</div>
                             </div>
                             <div class="profile-divider"></div>
+                            <a href="/pages/profile.html" class="profile-menu-item">
+                                <span>👤</span> My Profile
+                            </a>
                             <a href="#" onclick="logout()" class="profile-menu-item logout">
                                 <span>🚪</span> Logout
                             </a>

@@ -308,6 +308,12 @@
     color: var(--error);
 }
 
+@media (max-width: 1024px) {
+    .conditions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .conditions-grid {
         grid-template-columns: 1fr;
@@ -315,5 +321,28 @@
     
     .emergency-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .disclaimer-banner {
+        padding: var(--spacing-md);
+    }
+    
+    .condition-card {
+        padding: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .search-input {
+        font-size: 1rem;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .condition-icon {
+        font-size: 2.5rem;
+    }
+    
+    .condition-card {
+        padding: var(--spacing-md);
     }
 }

@@ -16,27 +16,53 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initializePregnancyMode() {
     try {
         const response = await apiCall('/auth/me', 'GET');
-        if (response.success && response.data.lmpDate) {
-            // Has pregnancy data - show dashboard
-            pregnancyData = response.data;
-            showDashboard();
+        console.log('Pregnancy mode initialization - User data:', response.data);
+        
+        if (response.success) {
+            // Check if user has pregnancy data (lmpDate or lastPeriodDate)
+            const hasPregnancyData = response.data.lmpDate || response.data.lastPeriodDate;
+            
+            if (hasPregnancyData) {
+                // Has pregnancy data - show dashboard
+                pregnancyData = response.data;
+                
+                // Ensure lmpDate is set (fallback to lastPeriodDate)
+                if (!pregnancyData.lmpDate && pregnancyData.lastPeriodDate) {
+                    pregnancyData.lmpDate = pregnancyData.lastPeriodDate;
+                }
+                
+                console.log('Loading dashboard with pregnancy data:', pregnancyData);
+                showDashboard();
+            } else {
+                // No pregnancy data - show setup
+                console.log('No pregnancy data found - showing setup');
+                showSetup();
+            }
         } else {
-            // No pregnancy data - show setup
             showSetup();
         }
     } catch (error) {
         console.error('Error loading pregnancy data:', error);
+        showToast('Failed to load pregnancy data. Please try again.', 'error');
         showSetup();
     }
 }
 
 // Show setup form
 function showSetup() {
-    document.getElementById('setupView').style.display = 'block';
-    document.getElementById('dashboardView').style.display = 'none';
+    const setupView = document.getElementById('setupView');
+    const dashboardView = document.getElementById('dashboardView');
+    
+    if (setupView) setupView.style.display = 'block';
+    if (dashboardView) dashboardView.style.display = 'none';
+    
+    console.log('Showing setup form');
     
     // Setup form handlers
-    document.getElementById('pregnancySetupForm').addEventListener('submit', handleSetupSubmit);
+    const setupForm = document.getElementById('pregnancySetupForm');
+    if (setupForm) {
+        setupForm.addEventListener('submit', handleSetupSubmit);
+    }
     
     // Auto-calculate due date when LMP changes
     document.getElementById('lmpDate').addEventListener('change', function() {
@@ -67,6 +93,9 @@ function showSetup() {
 async function handleSetupSubmit(e) {
     e.preventDefault();
     
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    showLoading(submitBtn);
+    
     const lmpDate = document.getElementById('lmpDate').value;
     const conceptionDate = document.getElementById('conceptionDate').value;
     const expectedDueDate = document.getElementById('expectedDueDate').value;
@@ -80,6 +109,8 @@ async function handleSetupSubmit(e) {
         const lmp = new Date(conception);
         lmp.setDate(lmp.getDate() - 14);
         finalLMP = lmp.toISOString().split('T')[0];
+        
+        console.log('Calculated LMP from conception date:', finalLMP);
     }
 
     // Calculate due date if not provided
@@ -88,38 +119,73 @@ async function handleSetupSubmit(e) {
         const dueDate = new Date(lmp);
         dueDate.setDate(dueDate.getDate() + 280);
         finalDueDate = dueDate.toISOString().split('T')[0];
+        
+        console.log('Calculated due date from LMP:', finalDueDate);
     }
 
     if (!finalLMP) {
         showToast('Please provide either LMP or Conception date', 'error');
+        hideLoading(submitBtn);
         return;
     }
 
-    try {
-        await apiCall('/auth/mode', 'PUT', {
-            careMode: 'pregnancy',
-            lmpDate: finalLMP,
-            expectedDueDate: finalDueDate,
-            conceptionDate: conceptionDate || null
-        });
+    // Validate dates
+    const today = new Date();
+    const lmpDateObj = new Date(finalLMP);
+    const daysSinceLMP = Math.floor((today - lmpDateObj) / (1000 * 60 * 60 * 24));
+    
+    if (daysSinceLMP < 0) {
+        showToast('LMP date cannot be in the future', 'error');
+        hideLoading(submitBtn);
+        return;
+    }
+    
+    if (daysSinceLMP > 280) {
+        showToast('LMP date is more than 40 weeks ago. Please verify the date.', 'warning');
+    }
 
-        showToast('Pregnancy journey started!', 'success');
+    const requestData = {
+        careMode: 'pregnancy',
+        lmpDate: finalLMP,
+        lastPeriodDate: finalLMP, // Send both for compatibility
+        expectedDueDate: finalDueDate,
+        conceptionDate: conceptionDate || null
+    };
+    
+    console.log('Submitting pregnancy setup data:', requestData);
+
+    try {
+        const response = await apiCall('/auth/mode', 'PUT', requestData);
         
-        // Reload to show dashboard
-        setTimeout(() => {
-            location.reload();
-        }, 1000);
+        console.log('Pregnancy setup response:', response);
+        
+        if (response.success) {
+            showToast('Pregnancy journey started successfully!', 'success');
+            
+            // Reload to show dashboard
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            throw new Error(response.message || 'Failed to save pregnancy data');
+        }
 
     } catch (error) {
         console.error('Error saving pregnancy data:', error);
-        showToast('Failed to save data. Please try again.', 'error');
+        showToast(error.message || 'Failed to save data. Please try again.', 'error');
+        hideLoading(submitBtn);
     }
 }
 
 // Show dashboard
 function showDashboard() {
-    document.getElementById('setupView').style.display = 'none';
-    document.getElementById('dashboardView').style.display = 'block';
+    const setupView = document.getElementById('setupView');
+    const dashboardView = document.getElementById('dashboardView');
+    
+    if (setupView) setupView.style.display = 'none';
+    if (dashboardView) dashboardView.style.display = 'block';
+    
+    console.log('Showing pregnancy dashboard');
     
     calculatePregnancyStats();
     renderDashboard();

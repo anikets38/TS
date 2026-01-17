@@ -3,12 +3,51 @@
 // ================================
 
 let currentBabyId = null;
+let trackingUpdateInterval = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     redirectIfNotAuthenticated();
     loadBabies();
     setDefaultTimes();
+    
+    // Start live time updates
+    startLiveTimeUpdates();
 });
+
+// Start interval for live time updates
+function startLiveTimeUpdates() {
+    // Update every minute
+    trackingUpdateInterval = setInterval(() => {
+        updateLogTimes();
+    }, 60000);
+}
+
+// Update all log times in real-time
+function updateLogTimes() {
+    const logTimes = document.querySelectorAll('.log-time');
+    logTimes.forEach(timeElement => {
+        const timestamp = timeElement.dataset.timestamp;
+        if (timestamp) {
+            timeElement.textContent = formatTimeAgo(timestamp);
+        }
+    });
+}
+
+// Format time ago helper for tracking page
+function formatTimeAgo(date) {
+    const now = new Date();
+    const past = new Date(date);
+    const diffMs = now - past;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+}
 
 // Load babies
 async function loadBabies() {
@@ -99,7 +138,7 @@ async function loadFeedingLogs() {
                 item.innerHTML = `
                     <div class="log-info">
                         <div class="log-type">${log.type}</div>
-                        <div class="log-time">${formatTime(log.time)}</div>
+                        <div class="log-time" data-timestamp="${log.time}">${formatTimeAgo(log.time)}</div>
                         <div class="log-details">
                             ${log.quantity ? `${log.quantity}ml` : ''}
                             ${log.duration ? `• ${log.duration} min` : ''}
@@ -145,7 +184,7 @@ async function loadSleepLogs() {
                 item.innerHTML = `
                     <div class="log-info">
                         <div class="log-type">Sleep Session</div>
-                        <div class="log-time">${formatTime(log.startTime)} - ${formatTime(log.endTime)}</div>
+                        <div class="log-time" data-timestamp="${log.startTime}">${formatTimeAgo(log.startTime)}</div>
                         <div class="log-details">
                             Duration: ${duration}h
                             ${log.quality ? `• Quality: ${log.quality}` : ''}
@@ -266,4 +305,10 @@ async function deleteLog(type, logId) {
     }
 }
 
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (trackingUpdateInterval) {
+        clearInterval(trackingUpdateInterval);
+    }
+});
 

@@ -1,0 +1,139 @@
+{
+  "name": "TinyStep AI Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tinystep-chatbot",
+        "responseMode": "responseNode"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simple AI chatbot without database\nconst message = $input.item.json.body.message;\nconst careMode = $input.item.json.body.context?.careMode || 'general';\nconst history = $input.item.json.body.conversationHistory || [];\n\n// Build context based on care mode\nlet context = '';\nif (careMode === 'planning') {\n  context = 'User is in Planning/Fertility mode. Provide advice about conception, cycle tracking, and fertility.';\n} else if (careMode === 'pregnancy') {\n  context = 'User is pregnant. Provide pregnancy-related advice, health tips, and what to expect.';\n} else if (careMode === 'baby-care') {\n  context = 'User is caring for a baby. Provide baby care advice, development milestones, and parenting tips.';\n}\n\n// Build system message\nconst systemMsg = `You are TinyStep AI Assistant. ${context} Be caring, concise (2-3 paragraphs), evidence-based, and always recommend consulting healthcare professionals for medical concerns. Use occasional emojis to be friendly.`;\n\n// Build messages array for OpenAI\nconst messages = [\n  { role: 'system', content: systemMsg }\n];\n\n// Add recent history (last 6 messages)\nhistory.slice(-6).forEach(msg => messages.push(msg));\n\n// Add current message\nmessages.push({ role: 'user', content: message });\n\nreturn {\n  json: {\n    model: 'gpt-3.5-turbo',\n    messages: messages,\n    temperature: 0.7,\n    max_tokens: 500\n  }\n};"
+      },
+      "name": "Prepare AI Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "resource": "chat",
+        "operation": "message",
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-3.5-turbo"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.messages }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 500
+        }
+      },
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract AI response\nconst response = $input.item.json.choices?.[0]?.message?.content || \n                $input.item.json.message?.content ||\n                'I apologize, I encountered an issue. Please try again.';\n\nreturn {\n  json: {\n    success: true,\n    data: {\n      response: response,\n      timestamp: new Date().toISOString()\n    }\n  }\n};"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare AI Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare AI Request": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": []
+}

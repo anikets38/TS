@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pregnancy Mode - CareNest AI</title>
+    <title>Pregnancy Mode - TinyStep</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/pregnancy.css">
+    <link rel="stylesheet" href="../css/chatbot-widget.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
                 <div class="logo-icon">👶</div>
-                <span class="logo-text">CareNest AI</span>
+                <span class="logo-text">TinyStep</span>
             </div>
             <div class="nav-links" id="navLinks">
                 <a href="/pages/pregnancy-guide.html" class="active">Pregnancy</a>
@@ -28,7 +29,7 @@
     </nav>
 
     <!-- SETUP SCREEN (Shows only if no pregnancy data) -->
-    <main class="page-container setup-view" id="setupView" style="display: none;">
+    <main class="page-container setup-view" id="setupView" style="display: block;">
         <div class="setup-container">
             <div class="setup-header">
                 <h1>🤰 Welcome to Your Pregnancy Journey</h1>
@@ -283,5 +284,6 @@
     <script src="../js/config.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/pregnancy.js"></script>
+    <script src="../js/chatbot-widget.js"></script>
 </body>
 </html>

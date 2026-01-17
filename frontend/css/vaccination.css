@@ -332,6 +332,11 @@
     .baby-selector-card .form-select {
         max-width: 100%;
     }
+    
+    .progress-stats {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
 }
 
 @media (max-width: 480px) {
@@ -347,5 +352,23 @@
     .vaccine-table th,
     .vaccine-table td {
         padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    #progressCard {
+        padding: var(--spacing-md);
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+    }
+    
+    .table-container {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Make table more readable on very small screens */
+    .vaccine-table th,
+    .vaccine-table td {
+        white-space: nowrap;
     }
 }

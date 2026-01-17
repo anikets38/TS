@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baby Profile - CareNest AI</title>
+    <title>Baby Profile - TinyStep</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <div class="container nav-container">
             <div class="logo">
                 <div class="logo-icon">👶</div>
-                <span class="logo-text">CareNest AI</span>
+                <span class="logo-text">TinyStep</span>
             </div>
             <div class="nav-links" id="navLinks">
                 <a href="/pages/dashboard.html">Dashboard</a>
@@ -32,12 +32,14 @@
 
     <main class="page-container">
         <div class="section-heading">
-            <h1>👶 Baby Profile</h1>
-            <p>Add or manage your baby's information</p>
+            <h1 id="pageTitle">👶 Baby Profile</h1>
+            <p id="pageSubtitle">Add or manage your baby's information</p>
         </div>
 
-        <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <div class="card baby-profile-card">
             <form id="babyProfileForm">
+                <input type="hidden" id="babyId" value="">
+                
                 <div class="form-group">
                     <label class="form-label" for="babyName">Baby Name *</label>
                     <input type="text" id="babyName" class="form-input" placeholder="Emma" required>
@@ -102,12 +104,59 @@
     <script src="../js/config.js"></script>
     <script src="../js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        let isEditMode = false;
+        let babyId = null;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
             redirectIfNotAuthenticated();
             
             // Set max date to today
             document.getElementById('dateOfBirth').max = new Date().toISOString().split('T')[0];
+            
+            // Check if we're in edit mode
+            const urlParams = new URLSearchParams(window.location.search);
+            babyId = urlParams.get('id');
+            
+            if (babyId) {
+                isEditMode = true;
+                document.getElementById('pageTitle').textContent = '✏️ Edit Baby Profile';
+                document.getElementById('pageSubtitle').textContent = 'Update your baby\'s information';
+                document.querySelector('button[type="submit"]').textContent = 'Update Baby Profile';
+                document.getElementById('babyId').value = babyId;
+                
+                // Load baby data
+                await loadBabyData(babyId);
+            }
         });
+        
+        // Load baby data for editing
+        async function loadBabyData(id) {
+            try {
+                const response = await apiCall(`/baby/${id}`, 'GET');
+                
+                if (response.success && response.data) {
+                    const baby = response.data;
+                    
+                    document.getElementById('babyName').value = baby.name || '';
+                    document.getElementById('dateOfBirth').value = baby.dateOfBirth ? baby.dateOfBirth.split('T')[0] : '';
+                    document.getElementById('gender').value = baby.gender || '';
+                    document.getElementById('weight').value = baby.weight || '';
+                    document.getElementById('height').value = baby.height || '';
+                    document.getElementById('bloodGroup').value = baby.bloodGroup || '';
+                    
+                    if (baby.allergies && Array.isArray(baby.allergies)) {
+                        document.getElementById('allergies').value = baby.allergies.join(', ');
+                    }
+                    
+                    if (baby.medicalConditions && Array.isArray(baby.medicalConditions)) {
+                        document.getElementById('medicalConditions').value = baby.medicalConditions.join(', ');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading baby data:', error);
+                showToast('Error loading baby data', 'error');
+            }
+        }
 
         document.getElementById('babyProfileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -127,24 +176,39 @@
             };
             
             try {
-                const response = await apiCall('/baby', 'POST', formData);
+                let response;
                 
-                if (response.success) {
-                    showToast('Baby profile created successfully!', 'success');
+                if (isEditMode && babyId) {
+                    // Update existing baby
+                    response = await apiCall(`/baby/${babyId}`, 'PUT', formData);
                     
-                    // Initialize vaccination schedule
-                    try {
-                        await apiCall(`/vaccination/initialize/${response.data._id}`, 'POST');
-                    } catch (error) {
-                        console.error('Error initializing vaccinations:', error);
+                    if (response.success) {
+                        showToast('Baby profile updated successfully!', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1500);
                     }
+                } else {
+                    // Create new baby
+                    response = await apiCall('/baby', 'POST', formData);
                     
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
+                    if (response.success) {
+                        showToast('Baby profile created successfully!', 'success');
+                        
+                        // Initialize vaccination schedule
+                        try {
+                            await apiCall(`/vaccination/initialize/${response.data._id}`, 'POST');
+                        } catch (error) {
+                            console.error('Error initializing vaccinations:', error);
+                        }
+                        
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1500);
+                    }
                 }
             } catch (error) {
-                showToast(error.message || 'Error creating baby profile', 'error');
+                showToast(error.message || `Error ${isEditMode ? 'updating' : 'creating'} baby profile`, 'error');
                 hideLoading(submitBtn);
             }
         });

@@ -468,6 +468,15 @@
     .chat-messages {
         max-height: 400px;
     }
+    
+    .ai-helper-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .ai-helper-banner .ai-text {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -487,5 +496,23 @@
     
     .ai-input-area button {
         width: 100%;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .ai-chat-messages {
+        max-height: 300px;
+    }
+    
+    .ai-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 1.25rem;
+    }
+    
+    .modal-ai {
+        max-width: 95%;
     }
 }

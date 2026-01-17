@@ -253,4 +253,111 @@ router.put('/mode', async (req, res) => {
     }
 });
 
+// @route   PUT /api/auth/profile
+// @desc    Update user profile
+// @access  Private
+router.put('/profile', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'No token provided'
+            });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret-key');
+        const { name, phone, dateOfBirth, address, city } = req.body;
+
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (phone !== undefined) updateData.phone = phone;
+        if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth;
+        if (address !== undefined) updateData.address = address;
+        if (city !== undefined) updateData.city = city;
+
+        const user = await User.findByIdAndUpdate(
+            decoded.id,
+            updateData,
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Profile updated successfully',
+            data: user
+        });
+    } catch (error) {
+        console.error('Profile update error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating profile'
+        });
+    }
+});
+
+// @route   PUT /api/auth/change-password
+// @desc    Change user password
+// @access  Private
+router.put('/change-password', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'No token provided'
+            });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret-key');
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Current password and new password are required'
+            });
+        }
+
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Verify current password
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: 'Current password is incorrect'
+            });
+        }
+
+        // Update password
+        user.password = newPassword;
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Password changed successfully'
+        });
+    } catch (error) {
+        console.error('Password change error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error changing password'
+        });
+    }
+});
+
 module.exports = router;
