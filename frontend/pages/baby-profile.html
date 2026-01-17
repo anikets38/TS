@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Profile - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/dashboard.html">Dashboard</a>
+                <a href="/pages/baby-tracking.html">Tracking</a>
+                <a href="/pages/vaccination.html">Vaccination</a>
+                <a href="/pages/pregnancy-guide.html">Pregnancy</a>
+                <a href="/pages/nutrition.html">Nutrition</a>
+                <a href="/pages/health-awareness.html">Health</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="section-heading">
+            <h1>👶 Baby Profile</h1>
+            <p>Add or manage your baby's information</p>
+        </div>
+
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <form id="babyProfileForm">
+                <div class="form-group">
+                    <label class="form-label" for="babyName">Baby Name *</label>
+                    <input type="text" id="babyName" class="form-input" placeholder="Emma" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="dateOfBirth">Date of Birth *</label>
+                    <input type="date" id="dateOfBirth" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="gender">Gender *</label>
+                    <select id="gender" class="form-select" required>
+                        <option value="">Select gender...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" class="form-input" placeholder="3.5" step="0.1" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="height">Height (cm)</label>
+                    <input type="number" id="height" class="form-input" placeholder="50" step="0.1" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bloodGroup">Blood Group</label>
+                    <select id="bloodGroup" class="form-select">
+                        <option value="">Select...</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="allergies">Known Allergies</label>
+                    <textarea id="allergies" class="form-textarea" placeholder="List any known allergies (separate with commas)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="medicalConditions">Medical Conditions</label>
+                    <textarea id="medicalConditions" class="form-textarea" placeholder="List any medical conditions (separate with commas)"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-large">Save Baby Profile</button>
+                <a href="dashboard.html" class="btn btn-outline btn-block mt-2">Cancel</a>
+            </form>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            redirectIfNotAuthenticated();
+            
+            // Set max date to today
+            document.getElementById('dateOfBirth').max = new Date().toISOString().split('T')[0];
+        });
+
+        document.getElementById('babyProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            showLoading(submitBtn);
+            
+            const formData = {
+                name: document.getElementById('babyName').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                gender: document.getElementById('gender').value,
+                weight: parseFloat(document.getElementById('weight').value) || null,
+                height: parseFloat(document.getElementById('height').value) || null,
+                bloodGroup: document.getElementById('bloodGroup').value,
+                allergies: document.getElementById('allergies').value.split(',').map(a => a.trim()).filter(a => a),
+                medicalConditions: document.getElementById('medicalConditions').value.split(',').map(m => m.trim()).filter(m => m)
+            };
+            
+            try {
+                const response = await apiCall('/baby', 'POST', formData);
+                
+                if (response.success) {
+                    showToast('Baby profile created successfully!', 'success');
+                    
+                    // Initialize vaccination schedule
+                    try {
+                        await apiCall(`/vaccination/initialize/${response.data._id}`, 'POST');
+                    } catch (error) {
+                        console.error('Error initializing vaccinations:', error);
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                showToast(error.message || 'Error creating baby profile', 'error');
+                hideLoading(submitBtn);
+            }
+        });
+    </script>
+</body>
+</html>

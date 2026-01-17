@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard-new.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/dashboard.html" class="active">Dashboard</a>
+                <a href="/pages/baby-tracking.html">Tracking</a>
+                <a href="/pages/vaccination.html">Vaccination</a>
+                <a href="/pages/nutrition.html">Nutrition</a>
+                <a href="/pages/health-awareness.html">Health</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="dashboard-title">Welcome back, <span id="userName">Parent</span>! 👋</h1>
+                        <p class="dashboard-subtitle">Here's your baby care overview for today</p>
+                    </div>
+                    <div class="header-date">
+                        <div class="date-display">
+                            <span class="date-icon">📅</span>
+                            <span id="todayDate"></span>
+                        </div>
+                        <button onclick="loadBabyData()" class="btn-refresh" title="Refresh data">
+                            🔄
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Baby Selector -->
+                <div class="baby-selector-card">
+                    <div class="selector-content">
+                        <label for="babySelect" class="selector-label">
+                            <span class="label-icon">👶</span>
+                            Select Baby Profile
+                        </label>
+                        <div class="selector-actions">
+                            <select id="babySelect" class="baby-select" onchange="loadBabyData()">
+                                <option value="">Choose a baby profile...</option>
+                            </select>
+                            <a href="baby-profile.html" class="btn-add-baby">
+                                <span>+</span> Add Baby
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid" id="dashboardContent">
+                <!-- Feeding Summary Card -->
+                <div class="info-card feeding-card">
+                    <div class="card-header-new">
+                        <div class="card-icon-wrapper feeding">
+                            <span class="card-icon">🍼</span>
+                        </div>
+                        <div class="card-header-text">
+                            <h3>Feeding Tracker</h3>
+                            <p>Today's feedings</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="metric-grid">
+                            <div class="metric-item highlight">
+                                <span class="metric-label">Total Today</span>
+                                <span class="metric-value" id="feedingTotal">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Next Feed</span>
+                                <span class="metric-value small" id="nextFeeding">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sleep Summary Card -->
+                <div class="info-card sleep-card">
+                    <div class="card-header-new">
+                        <div class="card-icon-wrapper sleep">
+                            <span class="card-icon">😴</span>
+                        </div>
+                        <div class="card-header-text">
+                            <h3>Sleep Tracker</h3>
+                            <p>Today's rest</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="metric-grid">
+                            <div class="metric-item highlight">
+                                <span class="metric-label">Hours Today</span>
+                                <span class="metric-value" id="sleepTotal">0h</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Sessions</span>
+                                <span class="metric-value small" id="sleepSessions">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Baby Profile Card -->
+                <div class="info-card profile-card">
+                    <div class="card-header-new">
+                        <div class="card-icon-wrapper profile">
+                            <span class="card-icon">👶</span>
+                        </div>
+                        <div class="card-header-text">
+                            <h3>Baby Profile</h3>
+                            <p>Information</p>
+                        </div>
+                        <a href="baby-profile.html" class="edit-btn">Edit</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="profile-info">
+                            <div class="profile-avatar">👶</div>
+                            <div class="profile-details">
+                                <h2 class="profile-name" id="babyName">No baby selected</h2>
+                                <p class="profile-age" id="babyAge">--</p>
+                                <p class="profile-gender" id="babyGender">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Insights Card -->
+                <div class="info-card insights-card full-width">
+                    <div class="card-header-new">
+                        <div class="card-icon-wrapper insights">
+                            <span class="card-icon">📊</span>
+                        </div>
+                        <div class="card-header-text">
+                            <h3>Weekly Insights</h3>
+                            <p>7-day summary</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="insights-grid-new">
+                            <div class="insight-card">
+                                <div class="insight-header">
+                                    <span class="insight-icon">🍼</span>
+                                    <span class="insight-title">Avg Feeds/Day</span>
+                                </div>
+                                <div class="insight-value" id="avgFeeds">0</div>
+                                <div class="insight-detail" id="avgFeedsDetail">--</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-header">
+                                    <span class="insight-icon">⏰</span>
+                                    <span class="insight-title">Peak Time</span>
+                                </div>
+                                <div class="insight-value small" id="peakFeedingTime">--</div>
+                                <div class="insight-detail" id="peakFeedingDetail">Most common feeding time</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-header">
+                                    <span class="insight-icon">😴</span>
+                                    <span class="insight-title">Avg Sleep</span>
+                                </div>
+                                <div class="insight-value" id="avgSleep">0h</div>
+                                <div class="insight-detail" id="avgSleepDetail">--</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-header">
+                                    <span class="insight-icon">💉</span>
+                                    <span class="insight-title">Next Vaccine</span>
+                                </div>
+                                <div class="insight-value small" id="nextVaccine">--</div>
+                                <div class="insight-detail" id="nextVaccineDetail">Upcoming vaccination</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="info-card actions-card full-width">
+                    <div class="card-header-new">
+                        <div class="card-icon-wrapper actions">
+                            <span class="card-icon">⚡</span>
+                        </div>
+                        <div class="card-header-text">
+                            <h3>Quick Actions</h3>
+                            <p>Common tasks</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="action-buttons">
+                            <a href="baby-tracking.html?action=feeding" class="action-btn">
+                                <span class="action-icon">🍼</span>
+                                <span class="action-text">Log Feeding</span>
+                            </a>
+                            <a href="baby-tracking.html?action=sleep" class="action-btn">
+                                <span class="action-icon">😴</span>
+                                <span class="action-text">Log Sleep</span>
+                            </a>
+                            <a href="vaccination.html" class="action-btn">
+                                <span class="action-icon">💉</span>
+                                <span class="action-text">Vaccinations</span>
+                            </a>
+                            <a href="nutrition.html" class="action-btn">
+                                <span class="action-icon">🥗</span>
+                                <span class="action-text">Nutrition</span>
+                            </a>
+                            <a href="health-awareness.html" class="action-btn">
+                                <span class="action-icon">🏥</span>
+                                <span class="action-text">Health Info</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state-new" id="emptyState" style="display: none;">
+                <div class="empty-icon">👶</div>
+                <h2>No Baby Profiles Yet</h2>
+                <p>Get started by adding your baby's profile to track their care</p>
+                <a href="baby-profile.html" class="btn-primary-large">
+                    <span>+</span> Add Your First Baby
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

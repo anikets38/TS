@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Tracking - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tracking.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/dashboard.html">Dashboard</a>
+                <a href="/pages/baby-tracking.html" class="active">Tracking</a>
+                <a href="/pages/vaccination.html">Vaccination</a>
+                <a href="/pages/pregnancy-guide.html">Pregnancy</a>
+                <a href="/pages/nutrition.html">Nutrition</a>
+                <a href="/pages/health-awareness.html">Health</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="section-heading">
+            <h1>📊 Baby Care Tracking</h1>
+            <p>Monitor your baby's daily feeding, sleep, and activities</p>
+        </div>
+
+        <!-- Baby Selector Card -->
+        <div class="card baby-selector-card">
+            <div class="selector-label">👶 Select Baby:</div>
+            <select id="babySelect" class="form-select" onchange="loadTrackingData()">
+                <option value="">Choose a baby to track...</option>
+            </select>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats" id="quickStats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-icon">🍼</div>
+                <div class="stat-info">
+                    <span class="stat-label">Today's Feedings</span>
+                    <span class="stat-value" id="todayFeedings">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">😴</div>
+                <div class="stat-info">
+                    <span class="stat-label">Sleep Hours</span>
+                    <span class="stat-value" id="todaySleep">0h</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-info">
+                    <span class="stat-label">Last Fed</span>
+                    <span class="stat-value" id="lastFed">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('feeding')">
+                <span class="tab-icon">🍼</span>
+                <span>Feeding</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('sleep')">
+                <span class="tab-icon">😴</span>
+                <span>Sleep</span>
+            </button>
+        </div>
+
+        <!-- Feeding Tab -->
+        <div id="feedingTab" class="tab-content active">
+            <div class="tracking-grid">
+                <!-- Add Feeding Form -->
+                <div class="card">
+                    <h3>Add Feeding Log</h3>
+                    <form id="feedingForm">
+                        <div class="form-group">
+                            <label class="form-label">Type</label>
+                            <select id="feedingType" class="form-select" required>
+                                <option value="breast">Breast</option>
+                                <option value="formula">Formula</option>
+                                <option value="solid">Solid</option>
+                                <option value="water">Water</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Time</label>
+                            <input type="datetime-local" id="feedingTime" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Quantity (ml/g)</label>
+                            <input type="number" id="feedingQuantity" class="form-input" placeholder="120" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Duration (minutes)</label>
+                            <input type="number" id="feedingDuration" class="form-input" placeholder="15" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            <textarea id="feedingNotes" class="form-textarea" placeholder="Optional notes..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Add Feeding</button>
+                    </form>
+                </div>
+
+                <!-- Feeding Logs -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Today's Feedings</h3>
+                        <span class="badge" id="feedingCount">0</span>
+                    </div>
+                    <div id="feedingLogsList" class="logs-list">
+                        <p class="empty-message">No feeding logs yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Tab -->
+        <div id="sleepTab" class="tab-content">
+            <div class="tracking-grid">
+                <!-- Add Sleep Form -->
+                <div class="card">
+                    <h3>Add Sleep Log</h3>
+                    <form id="sleepForm">
+                        <div class="form-group">
+                            <label class="form-label">Start Time</label>
+                            <input type="datetime-local" id="sleepStart" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">End Time</label>
+                            <input type="datetime-local" id="sleepEnd" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Quality</label>
+                            <select id="sleepQuality" class="form-select">
+                                <option value="">Select...</option>
+                                <option value="excellent">Excellent</option>
+                                <option value="good">Good</option>
+                                <option value="fair">Fair</option>
+                                <option value="poor">Poor</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            <textarea id="sleepNotes" class="form-textarea" placeholder="Optional notes..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Add Sleep</button>
+                    </form>
+                </div>
+
+                <!-- Sleep Logs -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Today's Sleep</h3>
+                        <span class="badge" id="sleepHours">0h</span>
+                    </div>
+                    <div id="sleepLogsList" class="logs-list">
+                        <p class="empty-message">No sleep logs yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/tracking.js"></script>
+</body>
+</html>

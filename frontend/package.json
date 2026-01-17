@@ -1,0 +1,12 @@
+{
+  "name": "carenest-ai-frontend",
+  "version": "1.0.0",
+  "description": "Maternal & Infant Care Platform - Frontend",
+  "scripts": {
+    "start": "live-server --port=3000 --host=localhost",
+    "dev": "live-server --port=3000 --host=localhost"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

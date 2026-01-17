@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/dashboard.html" class="active">Dashboard</a>
+                <a href="/pages/baby-tracking.html">Tracking</a>
+                <a href="/pages/vaccination.html">Vaccination</a>
+                <a href="/pages/nutrition.html">Nutrition</a>
+                <a href="/pages/health-awareness.html">Health</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="dashboard-title">Welcome back, <span id="userName">Parent</span>! 👋</h1>
+                        <p class="dashboard-subtitle">Here's your baby care overview for today</p>
+                    </div>
+                    <div class="header-date">
+                        <div class="date-display">
+                            <span class="date-icon">📅</span>
+                            <span id="todayDate"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Baby Selector -->
+                <div class="baby-selector-card">
+                    <div class="selector-content">
+                        <label for="babySelect" class="selector-label">
+                            <span class="label-icon">👶</span>
+                            Select Baby Profile
+                        </label>
+                        <div class="selector-actions">
+                            <select id="babySelect" class="baby-select" onchange="loadBabyData()">
+                                <option value="">Choose a baby profile...</option>
+                            </select>
+                            <a href="baby-profile.html" class="btn-add-baby">
+                                <span>+</span> Add Baby
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Summary Cards -->
+        <div class="dashboard-grid" id="dashboardContent">
+            <!-- Today's Summary -->
+            <div class="card summary-card">
+                <div class="card-header">
+                    <h3>📊 Today's Summary</h3>
+                    <span class="date-badge" id="todayDate"></span>
+                </div>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">🍼</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="todayFeeding">0</div>
+                            <div class="stat-label">Feedings</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">😴</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="todaySleep">0h</div>
+                            <div class="stat-label">Sleep</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">�</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="nextVaccine">--</div>
+                            <div class="stat-label">Next Vaccine</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baby Info Card -->
+            <div class="card baby-info-card">
+                <div class="card-header">
+                    <h3>👶 Baby Profile</h3>
+                    <a href="baby-profile.html" class="edit-link">Edit</a>
+                </div>
+                <div class="baby-info" id="babyInfo">
+                    <div class="baby-avatar">👶</div>
+                    <div class="baby-details">
+                        <h4 id="babyName">No baby selected</h4>
+                        <p id="babyAge">--</p>
+                        <p id="babyGender">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="info-card actions-card full-width">
+                <div class="card-header-new">
+                    <div class="card-icon-wrapper actions">
+                        <span class="card-icon">⚡</span>
+                    </div>
+                    <div class="card-header-text">
+                        <h3>Quick Actions</h3>
+                        <p>Common tasks</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="action-buttons">
+                        <a href="baby-tracking.html" class="action-btn">
+                            <span class="action-icon">📝</span>
+                            <span class="action-text">Log Activity</span>
+                        </a>
+                        <a href="vaccination.html" class="action-btn">
+                            <span class="action-icon">💉</span>
+                            <span class="action-text">Vaccinations</span>
+                        </a>
+                        <a href="nutrition.html" class="action-btn">
+                            <span class="action-icon">🥗</span>
+                            <span class="action-text">Nutrition</span>
+                        </a>
+                        <a href="health-awareness.html" class="action-btn">
+                            <span class="action-icon">🏥</span>
+                            <span class="action-text">Health Info</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state-new" id="emptyState">
+            <div class="empty-icon">👶</div>
+            <h2>No Baby Profiles Yet</h2>
+            <p>Get started by adding your baby's profile to track their care</p>
+            <a href="baby-profile.html" class="btn-primary-large">
+                <span>+</span> Add Your First Baby
+            </a>
+        </div>
+        
+        </div>
+    </main>
+            <div class="card quick-actions-card">
+                <div class="card-header">
+                    <h3>⚡ Quick Actions</h3>
+                </div>
+                <div class="quick-actions">
+                    <button onclick="window.location.href='baby-tracking.html?action=feeding'" class="action-btn">
+                        <span class="action-icon">🍼</span>
+                        <span>Log Feeding</span>
+                    </button>
+                    <button onclick="window.location.href='baby-tracking.html?action=sleep'" class="action-btn">
+                        <span class="action-icon">😴</span>
+                        <span>Log Sleep</span>
+                    </button>
+                    <button onclick="window.location.href='vaccination.html'" class="action-btn">
+                        <span class="action-icon">💉</span>
+                        <span>Vaccinations</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Today's Focus -->
+            <div class="card focus-card">
+                <div class="card-header">
+                    <h3>🎯 Today's Focus</h3>
+                </div>
+                <div class="focus-content">
+                    <div class="focus-item">
+                        <span class="focus-icon">✅</span>
+                        <span id="focusTask">Keep up the great work with regular feeding!</span>
+                    </div>
+                    <div class="focus-tip">
+                        <strong>💡 Tip:</strong> <span id="dailyTip">Babies need 10-12 hours of sleep per day.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card activity-card">
+                <div class="card-header">
+                    <h3>📝 Recent Activity</h3>
+                    <a href="baby-tracking.html" class="view-all-link">View All</a>
+                </div>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-item">
+                        <div class="activity-icon">🍼</div>
+                        <div class="activity-details">
+                            <p class="activity-title">Feeding logged</p>
+                            <p class="activity-time">2 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">😴</div>
+                        <div class="activity-details">
+                            <p class="activity-title">Sleep session completed</p>
+                            <p class="activity-time">5 hours ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Growth Milestones -->
+            <div class="card milestone-card">
+                <div class="card-header">
+                    <h3>📈 Growth & Milestones</h3>
+                    <button class="btn btn-outline btn-sm" onclick="showMilestoneModal()">Add Milestone</button>
+                </div>
+                <div class="milestone-content">
+                    <div class="growth-stats">
+                        <div class="growth-stat">
+                            <div class="growth-value" id="babyWeight">--</div>
+                            <div class="growth-label">Weight</div>
+                        </div>
+                        <div class="growth-stat">
+                            <div class="growth-value" id="babyHeight">--</div>
+                            <div class="growth-label">Height</div>
+                        </div>
+                        <div class="growth-stat">
+                            <div class="growth-value" id="babyHeadCirc">--</div>
+                            <div class="growth-label">Head Circumference</div>
+                        </div>
+                    </div>
+                    <div class="milestones-list" id="milestoneList">
+                        <div class="milestone-item">
+                            <input type="checkbox" class="milestone-checkbox" onclick="markMilestone('smile')">
+                            <div class="milestone-content">
+                                <div class="milestone-title">First Smile</div>
+                                <div class="milestone-age">Expected: 2 months</div>
+                            </div>
+                        </div>
+                        <div class="milestone-item">
+                            <input type="checkbox" class="milestone-checkbox" onclick="markMilestone('head-up')">
+                            <div class="milestone-content">
+                                <div class="milestone-title">Holds Head Up</div>
+                                <div class="milestone-age">Expected: 3-4 months</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-sm btn-block" onclick="window.location.href='milestones.html'">View All Milestones</button>
+                </div>
+            </div>
+
+            <!-- Nutrition Guidance -->
+            <div class="card nutrition-card">
+                <div class="card-header">
+                    <h3>🥗 Nutrition Guidance</h3>
+                    <button class="btn btn-outline btn-sm" onclick="window.location.href='nutrition.html'">Full Guide</button>
+                </div>
+                <div class="nutrition-content">
+                    <div class="nutrition-age-badge" id="nutritionAge">0-6 months</div>
+                    <div class="nutrition-recommendations" id="nutritionRecommendations">
+                        <div class="nutrition-item">
+                            <span class="nutrition-icon">🍼</span>
+                            <div class="nutrition-text">
+                                <strong>Exclusive Breastfeeding</strong>
+                                <p>Breast milk or formula only - No water or solid foods needed</p>
+                            </div>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-icon">⏰</span>
+                            <div class="nutrition-text">
+                                <strong>Feeding Frequency</strong>
+                                <p>8-12 times per day (every 2-3 hours)</p>
+                            </div>
+                        </div>
+                        <div class="nutrition-item warning">
+                            <span class="nutrition-icon">⚠️</span>
+                            <div class="nutrition-text">
+                                <strong>Avoid</strong>
+                                <p>Honey, cow's milk, solid foods before 6 months</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Alerts & Disease Awareness -->
+            <div class="card health-alert-card">
+                <div class="card-header">
+                    <h3>🏥 Health Awareness</h3>
+                    <button class="btn btn-outline btn-sm" onclick="window.location.href='health-awareness.html'">Learn More</button>
+                </div>
+                <div class="health-content">
+                    <div class="health-checklist">
+                        <div class="health-item">
+                            <span class="health-icon">🌡️</span>
+                            <div class="health-info">
+                                <strong>Fever Watch</strong>
+                                <p class="health-desc">Call doctor if temp > 100.4°F (38°C) for babies under 3 months</p>
+                            </div>
+                        </div>
+                        <div class="health-item">
+                            <span class="health-icon">💉</span>
+                            <div class="health-info">
+                                <strong>Next Vaccination</strong>
+                                <p class="health-desc" id="upcomingVaccine">2 month vaccines due soon</p>
+                            </div>
+                        </div>
+                        <div class="health-item">
+                            <span class="health-icon">🚨</span>
+                            <div class="health-info">
+                                <strong>Emergency Signs</strong>
+                                <p class="health-desc">Difficulty breathing, blue lips, excessive crying</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-block" onclick="window.location.href='health-awareness.html'">
+                        View Common Conditions
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feeding Schedule -->
+            <div class="card schedule-card">
+                <div class="card-header">
+                    <h3>🕐 Today's Schedule</h3>
+                    <button class="btn btn-outline btn-sm" onclick="showScheduleModal()">Edit</button>
+                </div>
+                <div class="schedule-content">
+                    <div class="schedule-timeline" id="scheduleTimeline">
+                        <div class="schedule-item completed">
+                            <span class="schedule-time">7:00 AM</span>
+                            <div class="schedule-event">
+                                <span class="schedule-icon">🍼</span>
+                                <span>Feeding</span>
+                            </div>
+                            <span class="schedule-status">✓</span>
+                        </div>
+                        <div class="schedule-item completed">
+                            <span class="schedule-time">9:00 AM</span>
+                            <div class="schedule-event">
+                                <span class="schedule-icon">😴</span>
+                                <span>Nap Time</span>
+                            </div>
+                            <span class="schedule-status">✓</span>
+                        </div>
+                        <div class="schedule-item upcoming">
+                            <span class="schedule-time">11:00 AM</span>
+                            <div class="schedule-event">
+                                <span class="schedule-icon">🍼</span>
+                                <span>Feeding</span>
+                            </div>
+                            <span class="schedule-status">⏰</span>
+                        </div>
+                        <div class="schedule-item upcoming">
+                            <span class="schedule-time">1:00 PM</span>
+                            <div class="schedule-event">
+                                <span class="schedule-icon">😴</span>
+                                <span>Nap Time</span>
+                            </div>
+                            <span class="schedule-status">⏰</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Records Quick Access -->
+            <div class="card medical-records-card">
+                <div class="card-header">
+                    <h3>📋 Medical Records</h3>
+                </div>
+                <div class="medical-records-content">
+                    <button class="medical-btn" onclick="window.location.href='vaccination.html'">
+                        <span class="medical-icon">💉</span>
+                        <div class="medical-text">
+                            <strong>Vaccinations</strong>
+                            <small id="vaccineProgress">3 of 10 completed</small>
+                        </div>
+                    </button>
+                    <button class="medical-btn" onclick="showGrowthChart()">
+                        <span class="medical-icon">📊</span>
+                        <div class="medical-text">
+                            <strong>Growth Chart</strong>
+                            <small>Track weight & height</small>
+                        </div>
+                    </button>
+                    <button class="medical-btn" onclick="showDoctorVisits()">
+                        <span class="medical-icon">🩺</span>
+                        <div class="medical-text">
+                            <strong>Doctor Visits</strong>
+                            <small>View history</small>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">👶</div>
+            <h2>Welcome to CareNest AI!</h2>
+            <p>Start by adding your baby's profile to begin tracking</p>
+            <a href="baby-profile.html" class="btn btn-primary btn-large">Add Baby Profile</a>
+        </div>
+    </main>
+
+    <!-- Milestone Modal -->
+    <div id="milestoneModal" class="modal">
+        <div class="modal-overlay" onclick="closeMilestoneModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📈 Add Milestone</h3>
+                <button class="modal-close" onclick="closeMilestoneModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="milestoneForm">
+                    <div class="form-group">
+                        <label class="form-label">Milestone</label>
+                        <select id="milestoneType" class="form-select" required>
+                            <option value="">Select milestone...</option>
+                            <option value="first-smile">First Smile</option>
+                            <option value="holds-head">Holds Head Up</option>
+                            <option value="rolls-over">Rolls Over</option>
+                            <option value="sits-up">Sits Up</option>
+                            <option value="crawls">Crawls</option>
+                            <option value="first-word">First Word</option>
+                            <option value="walks">First Steps</option>
+                            <option value="custom">Custom Milestone</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customMilestoneGroup" style="display:none;">
+                        <label class="form-label">Custom Milestone Name</label>
+                        <input type="text" id="customMilestoneName" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date Achieved</label>
+                        <input type="date" id="milestoneDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes (Optional)</label>
+                        <textarea id="milestoneNotes" class="form-textarea" placeholder="Add any notes..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Save Milestone</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fertility Planning - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pregnancy.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">🌱</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/fertility-planning.html" class="active">Planning</a>
+                <a href="#" id="switchModeLink">Switch Mode</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>🌱 Your Fertility Planning Journey</h1>
+            <p class="subtitle">Track your cycle, optimize fertility, and plan for pregnancy</p>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="fertility-dashboard">
+            <!-- Cycle Overview Card -->
+            <div class="card highlight-card">
+                <div class="card-header">
+                    <h3>📅 Cycle Overview</h3>
+                    <button class="btn btn-outline btn-sm" onclick="showCycleSetup()">Update Info</button>
+                </div>
+                <div class="cycle-stats">
+                    <div class="stat-large">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="cycleDay">Day 1</div>
+                            <div class="stat-label">of your cycle</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <span class="stat-label">Cycle Length</span>
+                            <span class="stat-value" id="cycleLength">28 days</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Period Duration</span>
+                            <span class="stat-value" id="periodDuration">5 days</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fertile Window Card -->
+            <div class="card fertility-card">
+                <div class="card-header">
+                    <h3>💚 Fertile Window</h3>
+                    <span class="status-badge fertile" id="fertilityStatus">High Fertility</span>
+                </div>
+                <div class="fertility-info">
+                    <div class="fertility-main">
+                        <div class="ovulation-countdown">
+                            <div class="countdown-value" id="ovulationCountdown">3</div>
+                            <div class="countdown-label">days until ovulation</div>
+                        </div>
+                    </div>
+                    <div class="fertility-dates">
+                        <div class="date-item">
+                            <span class="date-label">Fertile Window</span>
+                            <span class="date-value" id="fertileWindow">Jan 15 - Jan 20</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Peak Ovulation</span>
+                            <span class="date-value" id="ovulationDate">Jan 18</span>
+                        </div>
+                        <div class="date-item best-days">
+                            <span class="date-label">⭐ Best 3 Days</span>
+                            <span class="date-value" id="bestDays">Jan 17, 18, 19</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pregnancy Probability Card -->
+            <div class="card probability-card">
+                <div class="card-header">
+                    <h3>🎯 Conception Probability</h3>
+                    <button class="btn-icon" onclick="showProbabilityInfo()">ℹ️</button>
+                </div>
+                <div class="probability-content">
+                    <div class="probability-circle">
+                        <svg viewBox="0 0 100 100" class="probability-svg">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#4CAF50" stroke-width="8" 
+                                    stroke-dasharray="283" stroke-dashoffset="85" id="probabilityCircle"
+                                    transform="rotate(-90 50 50)"/>
+                        </svg>
+                        <div class="probability-value">
+                            <span class="value" id="probabilityValue">65</span>%
+                        </div>
+                    </div>
+                    <p class="probability-label">Chance of conception today</p>
+                    <div class="probability-factors">
+                        <div class="factor">✓ Peak fertile window</div>
+                        <div class="factor">✓ Regular cycle pattern</div>
+                        <div class="factor">✓ Optimal timing</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm btn-block" onclick="showConceptionTips()">
+                        Increase Your Chances
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Tip of the Day -->
+            <div class="card ai-tip-card">
+                <div class="card-header">
+                    <h3>💡 AI Tip of the Day</h3>
+                    <button class="btn-icon" onclick="saveTip()" id="saveTipBtn">🤍</button>
+                </div>
+                <div class="ai-tip-content">
+                    <div class="tip-category" id="tipCategory">🥗 Nutrition</div>
+                    <p class="tip-text" id="tipText">
+                        Include folate-rich foods like leafy greens, citrus fruits, and legumes in your diet. 
+                        Folic acid is crucial for preventing neural tube defects in early pregnancy.
+                    </p>
+                    <button class="btn btn-outline btn-sm" onclick="getNewTip()">Get New Tip</button>
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div class="card calendar-card">
+                <div class="card-header">
+                    <h3>📆 Cycle Calendar</h3>
+                    <div class="calendar-nav">
+                        <button class="btn-icon" onclick="previousMonth()">←</button>
+                        <span id="calendarMonth">January 2026</span>
+                        <button class="btn-icon" onclick="nextMonth()">→</button>
+                    </div>
+                </div>
+                <div class="calendar-legend">
+                    <span class="legend-item"><span class="dot period"></span> Period</span>
+                    <span class="legend-item"><span class="dot fertile"></span> Fertile</span>
+                    <span class="legend-item"><span class="dot peak"></span> Peak</span>
+                    <span class="legend-item"><span class="dot today"></span> Today</span>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated by JS -->
+                </div>
+            </div>
+
+            <!-- Cycle Health Score -->
+            <div class="card health-score-card">
+                <div class="card-header">
+                    <h3>📊 Cycle Health Score</h3>
+                </div>
+                <div class="health-score-content">
+                    <div class="score-gauge">
+                        <div class="gauge-fill" id="scoreGauge" style="width: 85%"></div>
+                    </div>
+                    <div class="score-value">
+                        <span class="score" id="healthScore">85</span>
+                        <span class="score-label">/100</span>
+                    </div>
+                    <div class="score-factors">
+                        <div class="factor-item good">
+                            <span class="factor-icon">✓</span>
+                            <span>Regular cycle pattern</span>
+                        </div>
+                        <div class="factor-item good">
+                            <span class="factor-icon">✓</span>
+                            <span>Consistent tracking</span>
+                        </div>
+                        <div class="factor-item warning">
+                            <span class="factor-icon">!</span>
+                            <span>Log more symptoms for better insights</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Symptom Tracker -->
+            <div class="card symptom-tracker-card">
+                <div class="card-header">
+                    <h3>📝 Today's Symptoms</h3>
+                    <span class="date-badge" id="todayDate">Jan 17</span>
+                </div>
+                <div class="symptom-grid">
+                    <button class="symptom-btn" onclick="toggleSymptom('cramps')" data-symptom="cramps">
+                        <span class="symptom-icon">🤕</span>
+                        <span class="symptom-label">Cramps</span>
+                    </button>
+                    <button class="symptom-btn" onclick="toggleSymptom('mood')" data-symptom="mood">
+                        <span class="symptom-icon">😊</span>
+                        <span class="symptom-label">Good Mood</span>
+                    </button>
+                    <button class="symptom-btn" onclick="toggleSymptom('discharge')" data-symptom="discharge">
+                        <span class="symptom-icon">💧</span>
+                        <span class="symptom-label">Discharge</span>
+                    </button>
+                    <button class="symptom-btn" onclick="toggleSymptom('headache')" data-symptom="headache">
+                        <span class="symptom-icon">🤯</span>
+                        <span class="symptom-label">Headache</span>
+                    </button>
+                    <button class="symptom-btn" onclick="toggleSymptom('energy')" data-symptom="energy">
+                        <span class="symptom-icon">⚡</span>
+                        <span class="symptom-label">High Energy</span>
+                    </button>
+                    <button class="symptom-btn" onclick="toggleSymptom('bloating')" data-symptom="bloating">
+                        <span class="symptom-icon">🎈</span>
+                        <span class="symptom-label">Bloating</span>
+                    </button>
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" onclick="saveSymptoms()">Save Today's Log</button>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card quick-actions-card">
+                <div class="card-header">
+                    <h3>⚡ Quick Actions</h3>
+                </div>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="logPeriod()">
+                        <span class="action-icon">🩸</span>
+                        <span>Log Period</span>
+                    </button>
+                    <button class="action-btn" onclick="logIntimacy()">
+                        <span class="action-icon">💕</span>
+                        <span>Log Intimacy</span>
+                    </button>
+                    <button class="action-btn" onclick="viewTrends()">
+                        <span class="action-icon">📈</span>
+                        <span>View Trends</span>
+                    </button>
+                    <button class="action-btn" onclick="setReminder()">
+                        <span class="action-icon">🔔</span>
+                        <span>Set Reminder</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Partner Wellness (Optional) -->
+            <div class="card partner-card">
+                <div class="card-header">
+                    <h3>👫 Partner Wellness</h3>
+                    <button class="btn btn-outline btn-sm" onclick="togglePartnerMode()">Enable</button>
+                </div>
+                <div class="partner-content" id="partnerContent" style="display: none;">
+                    <p class="partner-intro">Track wellness factors that impact male fertility</p>
+                    <div class="partner-checklist">
+                        <label class="checkbox-item">
+                            <input type="checkbox" onchange="updatePartnerTracker()">
+                            <span>Daily exercise completed</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" onchange="updatePartnerTracker()">
+                            <span>Healthy meals today</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" onchange="updatePartnerTracker()">
+                            <span>No smoking/alcohol</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" onchange="updatePartnerTracker()">
+                            <span>Good sleep (7+ hours)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" onchange="updatePartnerTracker()">
+                            <span>Stress management</span>
+                        </label>
+                    </div>
+                    <div class="partner-tips">
+                        <h4>💪 Today's Partner Tip</h4>
+                        <p>Zinc-rich foods like oysters, beef, and pumpkin seeds support healthy sperm production.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Reminders -->
+            <div class="card reminders-card">
+                <div class="card-header">
+                    <h3>🔔 Smart Reminders</h3>
+                    <button class="btn btn-outline btn-sm" onclick="manageReminders()">Manage</button>
+                </div>
+                <div class="reminders-list" id="remindersList">
+                    <div class="reminder-item active">
+                        <div class="reminder-icon">🌅</div>
+                        <div class="reminder-info">
+                            <div class="reminder-title">Fertile window starts tomorrow</div>
+                            <div class="reminder-time">9:00 AM</div>
+                        </div>
+                        <button class="btn-icon" onclick="toggleReminder(this)">✓</button>
+                    </div>
+                    <div class="reminder-item active">
+                        <div class="reminder-icon">💊</div>
+                        <div class="reminder-info">
+                            <div class="reminder-title">Take folic acid</div>
+                            <div class="reminder-time">8:00 AM, 8:00 PM</div>
+                        </div>
+                        <button class="btn-icon" onclick="toggleReminder(this)">✓</button>
+                    </div>
+                    <div class="reminder-item active">
+                        <div class="reminder-icon">💧</div>
+                        <div class="reminder-info">
+                            <div class="reminder-title">Drink water</div>
+                            <div class="reminder-time">Every 2 hours</div>
+                        </div>
+                        <button class="btn-icon" onclick="toggleReminder(this)">✓</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cycle Setup Modal -->
+    <div id="cycleSetupModal" class="modal">
+        <div class="modal-overlay" onclick="closeCycleSetup()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📅 Update Cycle Information</h3>
+                <button class="modal-close" onclick="closeCycleSetup()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="cycleSetupForm">
+                    <div class="form-group">
+                        <label class="form-label">First Day of Last Period</label>
+                        <input type="date" id="lastPeriodDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Average Cycle Length (days)</label>
+                        <input type="number" id="cycleLengthInput" class="form-input" value="28" min="21" max="35">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Period Duration (days)</label>
+                        <input type="number" id="periodDurationInput" class="form-input" value="5" min="3" max="7">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conception Tips Modal -->
+    <div id="conceptionTipsModal" class="modal">
+        <div class="modal-overlay" onclick="closeConceptionTips()"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>🎯 Ways to Increase Your Chances</h3>
+                <button class="modal-close" onclick="closeConceptionTips()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tips-checklist">
+                    <h4>✅ Timing</h4>
+                    <ul>
+                        <li>Have intercourse during your fertile window (5 days before ovulation + ovulation day)</li>
+                        <li>Focus on the 3 days leading up to ovulation for best results</li>
+                        <li>Consider every other day to maintain sperm quality</li>
+                    </ul>
+                    
+                    <h4>🥗 Nutrition</h4>
+                    <ul>
+                        <li>Take 400-800mcg of folic acid daily</li>
+                        <li>Eat fertility-boosting foods: leafy greens, nuts, berries, fish</li>
+                        <li>Stay hydrated (8-10 glasses of water daily)</li>
+                        <li>Limit caffeine to 200mg per day</li>
+                    </ul>
+                    
+                    <h4>💪 Lifestyle</h4>
+                    <ul>
+                        <li>Maintain a healthy BMI (18.5-24.9)</li>
+                        <li>Get 7-9 hours of quality sleep</li>
+                        <li>Exercise moderately (avoid intense workouts)</li>
+                        <li>Manage stress through yoga, meditation, or relaxation</li>
+                    </ul>
+                    
+                    <h4>🚫 Avoid</h4>
+                    <ul>
+                        <li>Smoking and secondhand smoke</li>
+                        <li>Alcohol consumption</li>
+                        <li>Excessive caffeine</li>
+                        <li>Hot tubs and saunas (for partners)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/fertility-planning.js"></script>
+</body>
+</html>

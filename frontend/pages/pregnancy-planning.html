@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning Mode - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pregnancy.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/pregnancy-planning.html" class="active">Planning</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="setup-container">
+            <div class="setup-header">
+                <h1>🤰 Welcome to Your Pregnancy Journey</h1>
+                <p class="subtitle">Let's get started with some essential information</p>
+            </div>
+
+            <!-- Setup Card -->
+            <div class="card setup-card">
+                <div class="card-body">
+                    <form id="pregnancySetupForm" class="setup-form">
+                        <!-- LMP Date -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">📅</span>
+                                First Day of Last Menstrual Period (LMP)
+                                <span class="label-required">*</span>
+                            </label>
+                            <input type="date" id="lmpDate" class="form-input" required>
+                            <small class="form-help">
+                                📌 Pregnancy weeks are medically calculated from LMP (safe & standard)
+                            </small>
+                        </div>
+
+                        <!-- Expected Due Date (Optional) -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">🗓</span>
+                                Doctor's Expected Delivery Date (Optional)
+                            </label>
+                            <input type="date" id="expectedDueDate" class="form-input">
+                            <small class="form-help">
+                                If your doctor has provided a specific due date
+                            </small>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="form-divider">
+                            <span>OR</span>
+                        </div>
+
+                        <!-- Conception Date -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">💕</span>
+                                Date of Conception (If Known)
+                            </label>
+                            <input type="date" id="conceptionDate" class="form-input">
+                            <small class="form-help">
+                                We'll calculate your LMP from this date
+                            </small>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                Start My Pregnancy Journey
+                                <span class="btn-icon">→</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <h3>Smart Dashboard</h3>
+                    <p>Track your weekly progress and get personalized care advice</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🧪</div>
+                    <h3>Test Reminders</h3>
+                    <p>Never miss important tests and scans during your pregnancy</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.getElementById('pregnancySetupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const lmpDate = document.getElementById('lmpDate').value;
+            const conceptionDate = document.getElementById('conceptionDate').value;
+            const expectedDueDate = document.getElementById('expectedDueDate').value;
+
+            let finalLMP = lmpDate;
+            let finalDueDate = expectedDueDate;
+
+            // If conception date is provided instead of LMP
+            if (!lmpDate && conceptionDate) {
+                const conception = new Date(conceptionDate);
+                const lmp = new Date(conception);
+                lmp.setDate(lmp.getDate() - 14); // LMP is typically 14 days before conception
+                finalLMP = lmp.toISOString().split('T')[0];
+            }
+
+            // Calculate due date if not provided (LMP + 280 days)
+            if (finalLMP && !finalDueDate) {
+                const lmp = new Date(finalLMP);
+                const dueDate = new Date(lmp);
+                dueDate.setDate(dueDate.getDate() + 280); // 40 weeks
+                finalDueDate = dueDate.toISOString().split('T')[0];
+            }
+
+            if (!finalLMP) {
+                showToast('Please provide either LMP or Conception date', 'error');
+                return;
+            }
+
+            try {
+                // Save pregnancy data
+                await apiCall('/auth/mode', 'PUT', {
+                    careMode: 'pregnancy',
+                    lmpDate: finalLMP,
+                    expectedDueDate: finalDueDate,
+                    conceptionDate: conceptionDate || null
+                });
+
+                showToast('Pregnancy journey started!', 'success');
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '/pages/pregnancy-guide.html';
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error saving pregnancy data:', error);
+                showToast('Failed to save data. Please try again.', 'error');
+            }
+        });
+
+        // Auto-calculate due date when LMP changes
+        document.getElementById('lmpDate').addEventListener('change', function() {
+            if (this.value && !document.getElementById('expectedDueDate').value) {
+                const lmp = new Date(this.value);
+                const dueDate = new Date(lmp);
+                dueDate.setDate(dueDate.getDate() + 280);
+                document.getElementById('expectedDueDate').value = dueDate.toISOString().split('T')[0];
+            }
+        });
+
+        // Clear LMP when conception date is entered
+        document.getElementById('conceptionDate').addEventListener('change', function() {
+            if (this.value) {
+                document.getElementById('lmpDate').value = '';
+            }
+        });
+
+        // Clear conception when LMP is entered
+        document.getElementById('lmpDate').addEventListener('input', function() {
+            if (this.value) {
+                document.getElementById('conceptionDate').value = '';
+            }
+        });
+
+        // Check if pregnancy data already exists
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await apiCall('/auth/me', 'GET');
+                if (response.success && response.data.lmpDate) {
+                    // User already has pregnancy data, redirect to dashboard
+                    window.location.href = '/pages/pregnancy-guide.html';
+                }
+            } catch (error) {
+                console.log('No existing pregnancy data');
+            }
+        });
+    </script>
+</body>
+</html>
+
+    <main class="page-container">
+        <div class="section-heading">
+            <h1>💑 Pregnancy Planning</h1>
+            <p class="subtitle">Track your cycle, predict fertile windows, and prepare for conception together</p>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="alert alert-info">
+            <strong>ℹ️ Educational Purpose Only</strong>
+            <p>This tool provides general wellness guidance and fertility awareness. It is not a diagnostic tool. Always consult healthcare professionals for medical advice.</p>
+        </div>
+
+        <!-- Cycle Tracker Card -->
+        <div class="card cycle-tracker-card">
+            <div class="card-header">
+                <h2>🩸 Cycle Tracker</h2>
+                <p>Track your menstrual cycle to predict fertility</p>
+            </div>
+            <div class="card-body">
+                <form id="cycleForm" class="planning-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Last Period Start Date</label>
+                            <input type="date" id="lastPeriodDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Average Cycle Length (days)</label>
+                            <input type="number" id="cycleLength" class="form-input" value="28" min="21" max="35" required>
+                            <small class="form-help">Typical range: 21-35 days</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Period Duration (days)</label>
+                            <input type="number" id="periodDuration" class="form-input" value="5" min="2" max="8" required>
+                        </div>
+                        <div class="form-group form-action">
+                            <label class="form-label" style="opacity: 0;">Action</label>
+                            <button type="submit" class="btn btn-primary btn-full">Calculate Fertile Window</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Fertility Calendar -->
+        <div class="card fertility-calendar-card" id="fertilityCalendar" style="display:none;">
+            <div class="card-header">
+                <h2>📅 Your Fertility Calendar</h2>
+                <p>Best dates for conception based on your cycle</p>
+            </div>
+            <div class="card-body">
+                <div class="fertility-summary">
+                    <div class="fertility-stat">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <span class="fertility-label">Next Period</span>
+                            <span class="fertility-value" id="nextPeriod">--</span>
+                        </div>
+                    </div>
+                    <div class="fertility-stat highlight">
+                        <div class="stat-icon">🌟</div>
+                        <div class="stat-content">
+                            <span class="fertility-label">Ovulation Day</span>
+                            <span class="fertility-value" id="ovulationDay">--</span>
+                        </div>
+                    </div>
+                    <div class="fertility-stat">
+                        <div class="stat-icon">💚</div>
+                        <div class="stat-content">
+                            <span class="fertility-label">Fertile Window</span>
+                            <span class="fertility-value" id="fertileWindow">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-success" id="conceptionTip" style="display:none;">
+                    <strong>✨ Best Conception Dates</strong>
+                    <p id="bestDates"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Fertility Suggestions -->
+        <div class="card" id="aiSuggestions" style="display:none;">
+            <div class="card-header">
+                <h2>🤖 AI Fertility Insights</h2>
+            </div>
+            <div class="card-body">
+                <div id="aiInsightContent"></div>
+            </div>
+        </div>
+
+        <!-- Couple Wellness Guide -->
+        <div class="wellness-tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('female')">👩 Female Wellness</button>
+                <button class="tab-btn" onclick="showTab('male')">👨 Male Wellness</button>
+            </div>
+
+            <!-- Female Wellness Tab -->
+            <div class="tab-content active" id="femaleTab">
+                <div class="card wellness-card">
+                    <div class="card-header">
+                        <h3>Female Fertility Wellness</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="wellness-section">
+                            <h4>🥗 Nutrition for Fertility</h4>
+                            <div class="wellness-grid">
+                                <div class="wellness-item">
+                                    <strong>Folic Acid:</strong> Take 400-800 mcg daily (leafy greens, fortified cereals)
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Iron:</strong> Red meat, beans, spinach for healthy ovulation
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Omega-3:</strong> Fish, walnuts, flaxseeds for hormonal balance
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Protein:</strong> Eggs, dairy, legumes for reproductive health
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Antioxidants:</strong> Berries, nuts, colorful vegetables
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wellness-section">
+                            <h4>💪 Lifestyle Recommendations</h4>
+                            <div class="wellness-grid">
+                                <div class="wellness-item">Maintain healthy BMI (18.5-24.9)</div>
+                                <div class="wellness-item">Regular moderate exercise (30 min, 5 days/week)</div>
+                                <div class="wellness-item">7-9 hours quality sleep</div>
+                                <div class="wellness-item">Stress management (yoga, meditation)</div>
+                                <div class="wellness-item">Stay hydrated (8-10 glasses water)</div>
+                            </div>
+                        </div>
+
+                        <div class="wellness-section avoid-section">
+                            <h4>🚫 Things to Avoid</h4>
+                            <div class="wellness-grid">
+                                <div class="wellness-item danger">Smoking and excessive alcohol</div>
+                                <div class="wellness-item danger">Excessive caffeine (limit to 200mg/day)</div>
+                                <div class="wellness-item danger">High-mercury fish (swordfish, king mackerel)</div>
+                                <div class="wellness-item danger">Extreme exercise or weight loss</div>
+                                <div class="wellness-item danger">Chronic stress and sleep deprivation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Male Wellness Tab -->
+            <div class="tab-content" id="maleTab">
+                <div class="card wellness-card">
+                    <div class="card-header">
+                        <h3>Male Fertility Wellness</h3>
+                        <p class="subtitle">Healthy habits that may support reproductive wellness</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="wellness-section">
+                            <h4>🥗 Nutrition for Healthy Sperm</h4>
+                            <div class="wellness-grid">
+                                <div class="wellness-item">
+                                    <strong>Zinc:</strong> Oysters, beef, pumpkin seeds, beans
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Folate:</strong> Leafy greens, citrus fruits, whole grains
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Vitamin C:</strong> Oranges, strawberries, bell peppers
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Vitamin D:</strong> Sunlight, fatty fish, fortified milk
+                                </div>
+                                <div class="wellness-item">
+                                    <strong>Antioxidants:</strong> Tomatoes (lycopene), dark chocolate, berries
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wellness-section">
+                            <h4>💪 Lifestyle Best Practices</h4>
+                            <div class="wellness-grid">
+                                <div class="wellness-item">Maintain healthy weight</div>
+                                <div class="wellness-item">Regular exercise (not excessive)</div>
+                                <div class="wellness-item">7-8 hours quality sleep</div>
+                                <div class="wellness-item">Manage stress levels</div>
+                                <div class="wellness-item">Wear loose, breathable underwear</div>
+                                <div class="wellness-item">Avoid excessive heat exposure</div>
+                            </div>
+                        </div>
+
+                        <div class="wellness-section avoid-section">
+                            <h4>🚫 Things to Avoid</h4>
+                            <div class="wellness-grid">
+                                <div class="wellness-item danger">Smoking and tobacco products</div>
+                                <div class="wellness-item danger">Excessive alcohol consumption</div>
+                                <div class="wellness-item danger">Anabolic steroids or testosterone supplements</div>
+                                <div class="wellness-item danger">Prolonged sitting or laptop on lap (heat)</div>
+                                <div class="wellness-item danger">Hot tubs, saunas frequently</div>
+                                <div class="wellness-item danger">Recreational drugs</div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <strong>⏰ Did You Know?</strong>
+                            <p>Sperm takes about 74 days to mature. Lifestyle changes today may show benefits in 2-3 months!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Wellness Checklist -->
+        <div class="card">
+            <div class="card-header">
+                <h2>✅ Today's Wellness Checklist</h2>
+                <p>Small steps towards a healthy pregnancy journey</p>
+            </div>
+            <div class="card-body">
+                <div class="checklist-grid">
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check1">
+                        <span>Took prenatal vitamin/folic acid</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check2">
+                        <span>Ate balanced, nutritious meals</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check3">
+                        <span>Drank 8+ glasses of water</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check4">
+                        <span>Got 30 min physical activity</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check5">
+                        <span>Practiced stress management</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check6">
+                        <span>Slept 7-8 hours</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Cycle calculation logic
+        document.getElementById('cycleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateFertility();
+        });
+
+        function calculateFertility() {
+            const lastPeriod = new Date(document.getElementById('lastPeriodDate').value);
+            const cycleLength = parseInt(document.getElementById('cycleLength').value);
+            const periodDuration = parseInt(document.getElementById('periodDuration').value);
+
+            if (!lastPeriod || !cycleLength) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Calculate dates
+            const ovulationDay = cycleLength - 14;
+            const ovulationDate = new Date(lastPeriod);
+            ovulationDate.setDate(ovulationDate.getDate() + ovulationDay);
+
+            const fertileStart = new Date(ovulationDate);
+            fertileStart.setDate(fertileStart.getDate() - 4);
+
+            const fertileEnd = new Date(ovulationDate);
+            fertileEnd.setDate(fertileEnd.getDate() + 1);
+
+            const nextPeriod = new Date(lastPeriod);
+            nextPeriod.setDate(nextPeriod.getDate() + cycleLength);
+
+            // Display results
+            document.getElementById('nextPeriod').textContent = formatDate(nextPeriod);
+            document.getElementById('ovulationDay').textContent = formatDate(ovulationDate);
+            document.getElementById('fertileWindow').textContent = 
+                `${formatDate(fertileStart)} - ${formatDate(fertileEnd)}`;
+
+            document.getElementById('bestDates').innerHTML = 
+                `<strong>${formatDate(fertileStart)}</strong> to <strong>${formatDate(fertileEnd)}</strong><br>
+                Focus on health, hydration, rest, and relaxation during this time.`;
+
+            // Show calendar and suggestions
+            document.getElementById('fertilityCalendar').style.display = 'block';
+            document.getElementById('conceptionTip').style.display = 'block';
+            
+            generateAIInsights(ovulationDate, lastPeriod);
+            
+            showToast('Fertility calendar calculated!', 'success');
+
+            // Save to backend
+            saveCycleData(lastPeriod, cycleLength, periodDuration);
+        }
+
+        function formatDate(date) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${date.getDate()} ${months[date.getMonth()]}`;
+        }
+
+        function generateAIInsights(ovulationDate, lastPeriod) {
+            const today = new Date();
+            const daysToOvulation = Math.ceil((ovulationDate - today) / (1000 * 60 * 60 * 24));
+            
+            let insights = '';
+            
+            if (daysToOvulation < 0) {
+                insights = `<p>Your fertile window has passed for this cycle. Next ovulation expected around ${formatDate(new Date(ovulationDate.getTime() + 28 * 24 * 60 * 60 * 1000))}.</p>`;
+            } else if (daysToOvulation === 0) {
+                insights = `<div class="alert alert-success">
+                    <strong>🌟 Today is your ovulation day!</strong>
+                    <p>This is the peak fertility day. Focus on:</p>
+                    <ul>
+                        <li>Staying relaxed and stress-free</li>
+                        <li>Good hydration and balanced nutrition</li>
+                        <li>Quality time with your partner</li>
+                    </ul>
+                </div>`;
+            } else if (daysToOvulation <= 4) {
+                insights = `<div class="alert alert-warning">
+                    <strong>⏰ Fertile window starts in ${daysToOvulation} days</strong>
+                    <p>Your body is preparing for ovulation. Recommendations:</p>
+                    <ul>
+                        <li>Ensure adequate rest and sleep</li>
+                        <li>Maintain a relaxed routine</li>
+                        <li>Stay hydrated</li>
+                        <li>Both partners should avoid alcohol</li>
+                    </ul>
+                </div>`;
+            } else {
+                insights = `<p>Ovulation is ${daysToOvulation} days away. Use this time to:</p>
+                <ul>
+                    <li>Build healthy habits (nutrition, exercise, sleep)</li>
+                    <li>Take prenatal vitamins with folic acid</li>
+                    <li>Practice stress-reduction techniques</li>
+                    <li>Track your cycle patterns</li>
+                </ul>`;
+            }
+            
+            document.getElementById('aiInsightContent').innerHTML = insights;
+            document.getElementById('aiSuggestions').style.display = 'block';
+        }
+
+        async function saveCycleData(lastPeriod, cycleLength, periodDuration) {
+            try {
+                await apiCall('/auth/mode', 'PUT', {
+                    careMode: 'planning',
+                    lastPeriodDate: lastPeriod,
+                    cycleLength: cycleLength,
+                    periodDuration: periodDuration
+                });
+            } catch (error) {
+                console.error('Error saving cycle data:', error);
+            }
+        }
+
+        function showTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            // Show selected tab
+            if (tab === 'female') {
+                document.getElementById('femaleTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            } else {
+                document.getElementById('maleTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            }
+        }
+
+        // Load saved cycle data on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await apiCall('/auth/me', 'GET');
+                if (response.success && response.data.lastPeriodDate) {
+                    document.getElementById('lastPeriodDate').value = response.data.lastPeriodDate.split('T')[0];
+                    document.getElementById('cycleLength').value = response.data.cycleLength || 28;
+                    document.getElementById('periodDuration').value = response.data.periodDuration || 5;
+                    
+                    // Auto-calculate
+                    calculateFertility();
+                }
+            } catch (error) {
+                console.log('No saved cycle data');
+            }
+        });
+    </script>
+</body>
+</html>

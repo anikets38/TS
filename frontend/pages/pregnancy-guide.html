@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregnancy Mode - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pregnancy.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/pregnancy-guide.html" class="active">Pregnancy</a>
+                <a href="/pages/nutrition.html">Nutrition</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SETUP SCREEN (Shows only if no pregnancy data) -->
+    <main class="page-container setup-view" id="setupView" style="display: none;">
+        <div class="setup-container">
+            <div class="setup-header">
+                <h1>🤰 Welcome to Your Pregnancy Journey</h1>
+                <p class="subtitle">Let's get started with some essential information</p>
+            </div>
+
+            <div class="card setup-card">
+                <div class="card-body">
+                    <form id="pregnancySetupForm" class="setup-form">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">📅</span>
+                                First Day of Last Menstrual Period (LMP)
+                                <span class="label-required">*</span>
+                            </label>
+                            <input type="date" id="lmpDate" class="form-input" required>
+                            <small class="form-help">
+                                📌 Pregnancy weeks are medically calculated from LMP (safe & standard)
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">🗓</span>
+                                Doctor's Expected Delivery Date (Optional)
+                            </label>
+                            <input type="date" id="expectedDueDate" class="form-input">
+                            <small class="form-help">
+                                If your doctor has provided a specific due date
+                            </small>
+                        </div>
+
+                        <div class="form-divider">
+                            <span>OR</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">💕</span>
+                                Date of Conception (If Known)
+                            </label>
+                            <input type="date" id="conceptionDate" class="form-input">
+                            <small class="form-help">
+                                We'll calculate your LMP from this date
+                            </small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                Start My Pregnancy Journey
+                                <span class="btn-icon">→</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <h3>Smart Dashboard</h3>
+                    <p>Track your weekly progress and get personalized care advice</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🧪</div>
+                    <h3>Test Reminders</h3>
+                    <p>Never miss important tests and scans during your pregnancy</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- DASHBOARD SCREEN (Shows only if pregnancy data exists) -->
+    <main class="page-container dashboard-container" id="dashboardView" style="display: none;">
+        <!-- Top Summary Card (WOW FACTOR) -->
+        <div class="summary-hero">
+            <div class="summary-main">
+                <div class="summary-badge">
+                    <span class="badge-icon">🤰</span>
+                    <div class="badge-content">
+                        <h1 id="currentWeekText">You are in Week --</h1>
+                        <p id="currentMonthText">Month -</p>
+                    </div>
+                </div>
+                <div class="summary-due-date">
+                    <span class="due-label">🗓 Estimated Due Date</span>
+                    <span class="due-date" id="dueDateDisplay">-- -- ----</span>
+                    <span class="days-remaining" id="daysRemaining">-- days to go</span>
+                </div>
+            </div>
+            <div class="summary-progress">
+                <div class="circular-progress">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" />
+                        <circle cx="50" cy="50" r="45" id="progressCircle" />
+                    </svg>
+                    <div class="progress-text">
+                        <span class="progress-value" id="progressPercent">0%</span>
+                        <span class="progress-label">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-info">
+                    <div class="stat-label">Days Pregnant</div>
+                    <div class="stat-value" id="daysPregnant">--</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🗓</div>
+                <div class="stat-info">
+                    <div class="stat-label">Trimester</div>
+                    <div class="stat-value" id="trimesterText">--</div>
+                </div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-label">This Month</div>
+                    <div class="stat-value" id="checklistProgress">0/0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Focus -->
+        <div class="card today-card">
+            <div class="card-header">
+                <h2>📋 What Should I Do Today?</h2>
+                <p>Personalized recommendations for your current week</p>
+            </div>
+            <div class="card-body">
+                <div id="todayContent" class="today-content">
+                    <div class="loading">Loading your daily recommendations...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Next Test/Scan -->
+            <div class="card test-card">
+                <div class="card-header">
+                    <h3>🧪 Next Important Test</h3>
+                </div>
+                <div class="card-body">
+                    <div id="nextTestContent" class="test-content">
+                        <div class="test-item">
+                            <div class="test-name" id="testName">--</div>
+                            <div class="test-week" id="testWeek">Week --</div>
+                            <div class="test-timing" id="testTiming">--</div>
+                            <p class="test-desc" id="testDesc">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- This Week's Care -->
+            <div class="card care-card">
+                <div class="card-header">
+                    <h3>🍎 This Week's Care Advice</h3>
+                </div>
+                <div class="card-body">
+                    <div id="careAdvice" class="care-list">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baby Development -->
+            <div class="card development-card">
+                <div class="card-header">
+                    <h3>👶 Baby's Development</h3>
+                </div>
+                <div class="card-body">
+                    <div id="babyDevelopment" class="development-content">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Checklist -->
+            <div class="card checklist-card">
+                <div class="card-header">
+                    <h3>✅ This Month's Checklist</h3>
+                    <span class="checklist-percentage" id="checklistPercentage">0%</span>
+                </div>
+                <div class="card-body">
+                    <div class="progress-bar-thin">
+                        <div class="progress-fill-thin" id="checklistProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div id="checklistItems" class="checklist-items">
+                        <div class="loading">Loading checklist...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Things to Avoid -->
+            <div class="card warning-card">
+                <div class="card-header">
+                    <h3>⚠️ Things to Avoid</h3>
+                </div>
+                <div class="card-body">
+                    <div id="avoidContent" class="avoid-list">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Warning -->
+            <div class="card emergency-card">
+                <div class="card-header">
+                    <h3>🚨 When to Call Doctor</h3>
+                </div>
+                <div class="card-body">
+                    <div class="emergency-list">
+                        <div class="emergency-item">⚠️ Heavy bleeding or severe cramping</div>
+                        <div class="emergency-item">⚠️ Severe or persistent headache</div>
+                        <div class="emergency-item">⚠️ Vision changes or blurry vision</div>
+                        <div class="emergency-item">⚠️ Sudden swelling in face or hands</div>
+                        <div class="emergency-item">⚠️ Decreased fetal movement (after week 28)</div>
+                        <div class="emergency-item">⚠️ High fever (>100.4°F / 38°C)</div>
+                    </div>
+                    <div class="emergency-cta">
+                        <strong>If you experience any of these symptoms, contact your healthcare provider immediately.</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reminders Section -->
+        <div class="card reminders-card">
+            <div class="card-header">
+                <h2>🔔 Upcoming Reminders</h2>
+            </div>
+            <div class="card-body">
+                <div id="remindersList" class="reminders-list">
+                    <div class="loading">Loading reminders...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/pregnancy.js"></script>
+</body>
+</html>

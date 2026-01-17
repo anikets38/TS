@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Journey - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mode-selection.css">
+</head>
+<body>
+    <div class="mode-selection-container">
+        <div class="mode-selection-content">
+            <!-- Logo -->
+            <div class="logo-center">
+                <div class="logo-icon">👶</div>
+                <h1 class="logo-text">CareNest AI</h1>
+            </div>
+
+            <!-- Heading -->
+            <div class="selection-heading">
+                <h2>Choose Your Journey</h2>
+                <p>Select the stage that best describes you</p>
+            </div>
+
+            <!-- Mode Cards -->
+            <div class="mode-cards">
+                <!-- Planning Mode Card -->
+                <div class="mode-card" onclick="selectMode('planning')">
+                    <div class="mode-card-media">
+                        <img
+                            class="mode-card-image"
+                            src="../assets/images/planning.jpeg"
+                            alt="Planning illustration"
+                            loading="lazy"
+                        >
+                    </div>
+                    <h3>Planning</h3>
+                    <p class="mode-subtitle">Preparing for Pregnancy</p>
+                    <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); selectMode('planning')">Select</button>
+                </div>
+
+                <!-- Pregnancy Mode Card -->
+                <div class="mode-card" onclick="selectMode('pregnancy')">
+                    <div class="mode-card-media">
+                        <img
+                            class="mode-card-image"
+                            src="../assets/images/pregnant1.jpeg"
+                            alt="Pregnancy illustration"
+                            loading="lazy"
+                        >
+                    </div>
+                    <h3>Pregnant</h3>
+                    <p class="mode-subtitle">Expecting a Baby</p>
+                    <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); selectMode('pregnancy')">Select</button>
+                </div>
+
+                <!-- Baby Care Card -->
+                <div class="mode-card" onclick="selectMode('baby-care')">
+                    <div class="mode-card-media">
+                        <img
+                            class="mode-card-image"
+                            src="../assets/images/baby1.jpeg"
+                            alt="Baby care illustration"
+                            loading="lazy"
+                        >
+                    </div>
+                    <h3>Baby Care</h3>
+                    <p class="mode-subtitle">I Have a Baby</p>
+                    <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); selectMode('baby-care')">Select</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeConfirmModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Switch Stage?</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to switch from <strong id="currentStage"></strong> to <strong id="newStage"></strong>?</p>
+                <p class="modal-note">✓ Your existing data will be saved and preserved</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmStageSwitch()">Yes, Switch</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        let currentCareMode = null;
+        let selectedMode = null;
+        const switching = new URLSearchParams(window.location.search).get('switch') === 'true';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if already authenticated
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check if mode already selected
+            checkExistingMode();
+        });
+
+        async function checkExistingMode() {
+            try {
+                const response = await apiCall('/auth/me', 'GET');
+                if (response.success && response.data.careMode) {
+                    currentCareMode = response.data.careMode;
+                    
+                    // If not explicitly switching, redirect to current mode
+                    if (!switching) {
+                        redirectToMode(currentCareMode);
+                    } else {
+                        // Show message that they can switch
+                        updateHeadingForSwitch();
+                    }
+                }
+            } catch (error) {
+                console.log('Mode not yet selected');
+            }
+        }
+
+        function updateHeadingForSwitch() {
+            const heading = document.querySelector('.selection-heading h2');
+            const subtitle = document.querySelector('.selection-heading p');
+            heading.textContent = 'Switch Your Stage';
+            subtitle.textContent = 'Select a new stage - your data will be preserved';
+            
+            // Highlight current mode
+            highlightCurrentMode();
+        }
+
+        function highlightCurrentMode() {
+            if (!currentCareMode) return;
+            
+            // Add visual indicator to current mode
+            setTimeout(() => {
+                document.querySelectorAll('.mode-card').forEach(card => {
+                    const cardMode = card.getAttribute('onclick').match(/selectMode\('([^']+)'\)/)?.[1];
+                    if (cardMode === currentCareMode) {
+                        card.classList.add('current-mode');
+                        const badge = document.createElement('div');
+                        badge.className = 'current-badge';
+                        badge.textContent = 'Current';
+                        card.querySelector('h3').appendChild(badge);
+                    }
+                });
+            }, 100);
+        }
+
+        async function selectMode(mode) {
+            console.log('selectMode called with:', mode);
+            
+            // Validate mode
+            const validModes = ['planning', 'pregnancy', 'baby-care'];
+            if (!validModes.includes(mode)) {
+                console.error('Invalid mode selected:', mode);
+                showToast('Invalid mode selected', 'error');
+                return;
+            }
+            
+            console.log('currentCareMode:', currentCareMode);
+            
+            // If user already has a mode, show confirmation
+            if (currentCareMode && currentCareMode !== mode) {
+                selectedMode = mode;
+                console.log('Showing confirmation modal');
+                showConfirmModal(currentCareMode, mode);
+                return;
+            }
+            
+            // Otherwise, directly set the mode
+            console.log('Performing direct mode switch');
+            await performModeSwitch(mode);
+        }
+
+        function showConfirmModal(fromMode, toMode) {
+            const modeNames = {
+                'planning': 'Planning',
+                'pregnancy': 'Pregnancy',
+                'baby-care': 'Baby Care'
+            };
+            
+            document.getElementById('currentStage').textContent = modeNames[fromMode];
+            document.getElementById('newStage').textContent = modeNames[toMode];
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            // Don't reset selectedMode here - it will be reset after the switch completes
+        }
+
+        async function confirmStageSwitch() {
+            const modeToSwitch = selectedMode; // Save the value before closing modal
+            closeConfirmModal();
+            selectedMode = null; // Clear it after saving
+            
+            if (!modeToSwitch) {
+                showToast('No mode selected', 'error');
+                return;
+            }
+            
+            await performModeSwitch(modeToSwitch);
+        }
+
+        async function performModeSwitch(mode) {
+            try {
+                // Validate mode value before sending
+                const validModes = ['planning', 'pregnancy', 'baby-care'];
+                if (!validModes.includes(mode)) {
+                    throw new Error(`Invalid mode: ${mode}. Must be one of: ${validModes.join(', ')}`);
+                }
+                
+                showToast('Updating your stage...', 'success');
+                
+                console.log('Switching to mode:', mode);
+                console.log('Sending request with careMode:', mode);
+                
+                // Update user profile with selected mode
+                const requestBody = { careMode: mode };
+                console.log('Request body:', JSON.stringify(requestBody));
+                
+                const response = await apiCall('/auth/mode', 'PUT', requestBody);
+                
+                if (response.success || response.message) {
+                    const modeNames = {
+                        'planning': 'Planning',
+                        'pregnancy': 'Pregnancy',
+                        'baby-care': 'Baby Care'
+                    };
+                    const modeName = modeNames[mode] || 'Care';
+                    const message = currentCareMode ? `Switched to ${modeName} mode!` : `${modeName} mode activated!`;
+                    showToast(message, 'success');
+                    
+                    // Store in localStorage for quick access
+                    localStorage.setItem('careMode', mode);
+                    
+                    // Update current mode
+                    currentCareMode = mode;
+                    
+                    // Redirect based on mode
+                    setTimeout(() => {
+                        redirectToMode(mode);
+                    }, 1500);
+                } else {
+                    throw new Error('Failed to update mode');
+                }
+            } catch (error) {
+                console.error('Mode switch error:', error);
+                showToast(error.message || 'Error switching mode. Please try again.', 'error');
+            }
+        }
+
+        function redirectToMode(mode) {
+            if (mode === 'planning') {
+                window.location.href = 'fertility-planning.html';
+            } else if (mode === 'pregnancy') {
+                window.location.href = 'pregnancy-guide.html';
+            } else if (mode === 'baby-care') {
+                window.location.href = 'dashboard.html';
+            } else {
+                // Fallback
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaccination - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/vaccination.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/dashboard.html">Dashboard</a>
+                <a href="/pages/baby-tracking.html">Tracking</a>
+                <a href="/pages/vaccination.html" class="active">Vaccination</a>
+                <a href="/pages/pregnancy-guide.html">Pregnancy</a>
+                <a href="/pages/nutrition.html">Nutrition</a>
+                <a href="/pages/health-awareness.html">Health</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="section-heading">
+            <h1>💉 Vaccination Schedule</h1>
+            <p>Keep your baby protected - Track vaccination records and upcoming immunizations</p>
+        </div>
+
+        <!-- Baby Selector Card -->
+        <div class="card baby-selector-card">
+            <div class="selector-label">👶 Select Baby:</div>
+            <select id="babySelect" class="form-select" onchange="loadVaccinations()">
+                <option value="">Choose a baby to view schedule...</option>
+            </select>
+        </div>
+
+        <!-- Progress -->
+        <div class="card" id="progressCard" style="display: none;">
+            <h3>Vaccination Progress</h3>
+            <div class="progress-stats">
+                <div class="stat">
+                    <span class="stat-value" id="completedCount">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="upcomingCount">0</span>
+                    <span class="stat-label">Upcoming</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="overdueCount">0</span>
+                    <span class="stat-label">Overdue</span>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <p class="progress-text" id="progressText">0% complete</p>
+        </div>
+
+        <!-- Vaccination Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Vaccination Schedule</h3>
+                <button id="initializeBtn" class="btn btn-primary" onclick="initializeSchedule()" style="display: none;">
+                    Initialize Schedule
+                </button>
+            </div>
+            <div class="table-container">
+                <table class="vaccine-table">
+                    <thead>
+                        <tr>
+                            <th>Vaccine</th>
+                            <th>Recommended Age</th>
+                            <th>Status</th>
+                            <th>Date Given</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vaccineTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-message">Select a baby to view vaccination schedule</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mark Complete Modal -->
+    <div id="markCompleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Mark Vaccination as Completed</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong id="modalVaccineName"></strong></p>
+                <form id="markCompleteForm">
+                    <input type="hidden" id="vaccineId">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Date Given *</label>
+                        <input type="date" id="dateGiven" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Administered By</label>
+                        <input type="text" id="administeredBy" class="form-input" placeholder="Dr. Smith">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Batch Number</label>
+                        <input type="text" id="batchNumber" class="form-input" placeholder="ABC123">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" id="location" class="form-input" placeholder="City Hospital">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea id="notes" class="form-textarea" placeholder="Any side effects or notes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Mark as Completed</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/vaccination.js"></script>
+</body>
+</html>

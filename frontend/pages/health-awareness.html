@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Awareness - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/health.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/dashboard.html">Dashboard</a>
+                <a href="/pages/baby-tracking.html">Tracking</a>
+                <a href="/pages/vaccination.html">Vaccination</a>
+                <a href="/pages/pregnancy-guide.html">Pregnancy</a>
+                <a href="/pages/nutrition.html">Nutrition</a>
+                <a href="/pages/health-awareness.html" class="active">Health</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="section-heading">
+            <h1>🏥 Health Awareness Center</h1>
+            <p>Learn about common infant health conditions and when to seek medical help</p>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer-banner">
+            <span class="disclaimer-icon">⚠️</span>
+            <div class="disclaimer-content">
+                <strong>Medical Disclaimer:</strong> This information is for educational purposes only and does not replace professional medical advice. Always consult your pediatrician for medical concerns or emergencies.
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="card search-card">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="Search health conditions or symptoms..."
+                oninput="filterConditions()"
+            >
+        </div>
+
+        <!-- Health Conditions Grid -->
+        <div class="conditions-grid" id="conditionsGrid">
+            <!-- Will be populated by JS -->
+        </div>
+
+        <!-- Emergency Section -->
+        <div class="emergency-section">
+            <h2>🚨 When to Call Emergency Services (911)</h2>
+            <div class="emergency-grid">
+                <div class="emergency-card">
+                    <div class="emergency-icon">🫁</div>
+                    <h3>Breathing Problems</h3>
+                    <ul>
+                        <li>Difficulty breathing or gasping</li>
+                        <li>Blue lips or face</li>
+                        <li>Choking that doesn't resolve</li>
+                    </ul>
+                </div>
+                <div class="emergency-card">
+                    <div class="emergency-icon">🧠</div>
+                    <h3>Neurological</h3>
+                    <ul>
+                        <li>Seizures (first time or prolonged)</li>
+                        <li>Loss of consciousness</li>
+                        <li>Extreme lethargy or unresponsiveness</li>
+                    </ul>
+                </div>
+                <div class="emergency-card">
+                    <div class="emergency-icon">🤕</div>
+                    <h3>Severe Injury</h3>
+                    <ul>
+                        <li>Head injury with vomiting</li>
+                        <li>Heavy bleeding</li>
+                        <li>Suspected poisoning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Condition Detail Modal -->
+    <div id="conditionModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="modal-close" onclick="closeConditionModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/health.js"></script>
+</body>
+</html>

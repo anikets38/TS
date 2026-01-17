@@ -1,0 +1,2144 @@
+/* ================================
+   PREGNANCY STYLES
+   ================================ */
+
+/* ==== SETUP PAGE ==== */
+.setup-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.setup-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.setup-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.setup-card {
+    border: 2px solid #10b981;
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.1);
+}
+
+.setup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.label-icon {
+    font-size: 1.25rem;
+}
+
+.label-required {
+    color: #ef4444;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.form-divider {
+    position: relative;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.form-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.form-divider span {
+    position: relative;
+    background: white;
+    padding: 0 1rem;
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.btn-large {
+    padding: 1rem 3rem;
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    font-size: 1.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.info-card {
+    text-align: center;
+    padding: 2rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.info-card:hover {
+    background: #f0fdf4;
+    transform: translateY(-4px);
+}
+
+.info-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.info-card h3 {
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.info-card p {
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+/* ==== DASHBOARD ==== */
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Summary Hero */
+.summary-hero {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+}
+
+.summary-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.summary-badge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.badge-icon {
+    font-size: 3rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.badge-content h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+.badge-content p {
+    font-size: 1.25rem;
+    margin: 0.25rem 0 0 0;
+    opacity: 0.9;
+}
+
+.summary-due-date {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.due-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    opacity: 0.9;
+    letter-spacing: 1px;
+}
+
+.due-date {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.days-remaining {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Circular Progress */
+.circular-progress {
+    position: relative;
+    width: 150px;
+    height: 150px;
+}
+
+.circular-progress svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.circular-progress circle {
+    fill: none;
+    stroke-width: 8;
+}
+
+.circular-progress circle:first-child {
+    stroke: rgba(255, 255, 255, 0.2);
+}
+
+.circular-progress circle:last-child {
+    stroke: white;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    transition: stroke-dashoffset 1s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.progress-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.progress-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+/* Quick Stats */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.stat-card.highlight {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+    border: 2px solid #f59e0b;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* Today Card */
+.today-card {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 2px solid #3b82f6;
+    margin-bottom: 2rem;
+}
+
+.today-content {
+    min-height: 100px;
+}
+
+.today-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.today-item {
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+}
+
+.today-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.today-content .today-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.today-content .today-desc {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Test Card */
+.test-card {
+    background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%);
+    border: 2px solid #f59e0b;
+}
+
+.test-content {
+    padding: 1rem 0;
+}
+
+.test-item {
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+}
+
+.test-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.test-week {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.test-timing {
+    font-size: 1rem;
+    color: #f59e0b;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.test-desc {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* Care List */
+.care-list, .avoid-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.care-item, .avoid-item {
+    padding: 0.875rem 1rem;
+    background: #f9fafb;
+    border-left: 4px solid #10b981;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+.care-item:hover, .avoid-item:hover {
+    background: #f0fdf4;
+    transform: translateX(4px);
+}
+
+.avoid-item {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.avoid-item:hover {
+    background: #fee2e2;
+}
+
+/* Development Content */
+.development-content {
+    padding: 1rem 0;
+}
+
+.baby-size {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.baby-desc {
+    color: #4b5563;
+    line-height: 1.7;
+}
+
+/* Checklist */
+.progress-bar-thin {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.progress-fill-thin {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    transition: width 0.5s ease;
+}
+
+.checklist-percentage {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.checklist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checklist-item-dash {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.checklist-item-dash:hover {
+    background: #f0fdf4;
+}
+
+.checklist-item-dash input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    accent-color: #10b981;
+}
+
+.checklist-item-dash.completed {
+    opacity: 0.6;
+}
+
+.checklist-item-dash.completed span {
+    text-decoration: line-through;
+}
+
+/* Emergency Card */
+.emergency-card {
+    background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+    border: 2px solid #ef4444;
+}
+
+.emergency-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.emergency-item {
+    padding: 0.875rem 1rem;
+    background: white;
+    border-left: 4px solid #ef4444;
+    border-radius: 6px;
+    font-weight: 500;
+    color: #991b1b;
+}
+
+.emergency-cta {
+    padding: 1rem;
+    background: #fee2e2;
+    border-radius: 8px;
+    text-align: center;
+    color: #991b1b;
+}
+
+/* Reminders */
+.reminders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reminder-item {
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+    transition: all 0.3s;
+}
+
+.reminder-item:hover {
+    background: #eff6ff;
+    transform: translateX(4px);
+}
+
+.reminder-icon {
+    font-size: 1.5rem;
+}
+
+.reminder-content {
+    flex: 1;
+}
+
+.reminder-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.reminder-time {
+    font-size: 0.875rem;
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+.reminder-desc {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.action-btn:hover {
+    border-color: #10b981;
+    background: #f0fdf4;
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 1.5rem;
+}
+.planning-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-action {
+    justify-content: flex-end;
+}
+
+.btn-full {
+    width: 100%;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Fertility Calendar */
+.fertility-calendar-card {
+    background: linear-gradient(135deg, #f8fffe 0%, #ffffff 100%);
+    border: 2px solid #10b981;
+}
+
+.fertility-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.fertility-stat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.fertility-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.fertility-stat.highlight {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+    border: 2px solid #f59e0b;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.fertility-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fertility-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* Wellness Tabs */
+.wellness-tabs {
+    margin-top: 2rem;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    flex: 1;
+    min-width: 200px;
+    padding: 1rem 2rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    color: #4b5563;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.tab-btn:hover {
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: #10b981;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Wellness Sections */
+.wellness-card {
+    border: 2px solid #e5e7eb;
+}
+
+.wellness-section {
+    margin-bottom: 2rem;
+}
+
+.wellness-section:last-child {
+    margin-bottom: 0;
+}
+
+.wellness-section h4 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.wellness-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.wellness-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-left: 4px solid #10b981;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    transition: all 0.3s;
+}
+
+.wellness-item:hover {
+    background: #f0fdf4;
+    transform: translateX(4px);
+}
+
+.wellness-item.danger {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+}
+
+.wellness-item.danger:hover {
+    background: #fee2e2;
+}
+
+.avoid-section .wellness-item {
+    border-left-color: #ef4444;
+}
+
+/* Checklist */
+.checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.checklist-item:hover {
+    background: #f0fdf4;
+    transform: translateX(4px);
+}
+
+.checklist-item input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    accent-color: #10b981;
+}
+
+.checklist-item span {
+    flex: 1;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Month Selector (Pregnancy Guide) */
+.month-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.month-btn {
+    padding: var(--spacing-md);
+    background: white;
+    border: 2px solid var(--gray-200);
+    color: var(--charcoal);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.month-btn:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.month-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Progress Header */
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.progress-header h3 {
+    margin: 0;
+}
+
+.current-month {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.guide-card {
+    position: relative;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.guide-card h3 {
+    margin-bottom: var(--spacing-md);
+    color: var(--primary);
+}
+
+.guide-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.guide-card li {
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: start;
+    gap: var(--spacing-sm);
+}
+
+.guide-card li:last-child {
+    border-bottom: none;
+}
+
+.guide-card li:before {
+    content: '•';
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.warning-card {
+    border: 2px solid var(--error);
+    background: linear-gradient(135deg, #FEF2F2 0%, white 100%);
+}
+
+.warning-card h3 {
+    color: var(--error);
+}
+
+.warning-card li:before {
+    content: '⚠';
+    color: var(--error);
+}
+
+.trimester-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--primary);
+    color: white;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-top: var(--spacing-sm);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .fertility-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .fertility-stat {
+        padding: 1rem;
+    }
+    
+    .tab-buttons {
+        flex-direction: column;
+    }
+    
+    .tab-btn {
+        min-width: 100%;
+    }
+    
+    .wellness-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .checklist-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .month-selector {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .guide-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-full {
+        padding: 1rem 1.5rem;
+    }
+    
+    /* Dashboard responsive */
+    .summary-hero {
+        grid-template-columns: 1fr;
+    }
+    
+    .circular-progress {
+        margin: 0 auto;
+    }
+    
+    .quick-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .fertility-stat {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stat-icon {
+        font-size: 1.75rem;
+    }
+    
+    .fertility-value {
+        font-size: 1.1rem;
+    }
+    
+    .wellness-section h4 {
+        font-size: 1.1rem;
+    }
+    
+    .wellness-item {
+        padding: 0.875rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Dashboard mobile */
+    .badge-icon {
+        font-size: 2rem;
+    }
+    
+    .badge-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .badge-content p {
+        font-size: 1rem;
+    }
+    
+    .due-date {
+        font-size: 1.25rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .circular-progress {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .progress-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* ================================
+   FERTILITY PLANNING STYLES
+   ================================ */
+
+.fertility-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Cycle Overview Card */
+.cycle-stats {
+    padding: 1rem 0;
+}
+
+.stat-large {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.stat-large .stat-icon {
+    font-size: 3rem;
+}
+
+.stat-large .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.stat-large .stat-label {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.stat-row .stat-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.stat-row .stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.stat-row .stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Fertility Card */
+.fertility-card {
+    border-left: 4px solid #10b981;
+}
+
+.status-badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-badge.fertile {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.low {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+.status-badge.post {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.fertility-info {
+    padding: 1rem 0;
+}
+
+.ovulation-countdown {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 12px;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.countdown-value {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.countdown-label {
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+    opacity: 0.95;
+}
+
+.fertility-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.date-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.date-item.best-days {
+    background: #fef3c7;
+    border-left: 3px solid #f59e0b;
+}
+
+.date-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.date-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* Probability Card */
+.probability-card {
+    border-left: 4px solid #8b5cf6;
+}
+
+.probability-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.probability-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1rem;
+}
+
+.probability-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.probability-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.probability-value .value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.probability-label {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.probability-factors {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.factor {
+    font-size: 0.875rem;
+    color: #059669;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+/* AI Tip Card */
+.ai-tip-card {
+    border-left: 4px solid #f59e0b;
+    background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+}
+
+.ai-tip-content {
+    padding: 0.5rem 0;
+}
+
+.tip-category {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    background: #fef3c7;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 1rem;
+}
+
+.tip-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+
+/* Calendar Card */
+.calendar-card {
+    grid-column: span 2;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.calendar-legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot.period {
+    background: #ef4444;
+}
+
+.dot.fertile {
+    background: #10b981;
+}
+
+.dot.peak {
+    background: #f59e0b;
+}
+
+.dot.today {
+    background: #3b82f6;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-header {
+    text-align: center;
+    padding: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f9fafb;
+}
+
+.calendar-day:hover:not(.empty) {
+    background: #e5e7eb;
+    transform: scale(1.05);
+}
+
+.calendar-day.empty {
+    background: transparent;
+    cursor: default;
+}
+
+.calendar-day.today {
+    background: #3b82f6;
+    color: white;
+    font-weight: 700;
+}
+
+.calendar-day.period {
+    background: #fee2e2;
+    color: #991b1b;
+    font-weight: 600;
+}
+
+.calendar-day.fertile {
+    background: #d1fae5;
+    color: #065f46;
+    font-weight: 600;
+}
+
+.calendar-day.peak {
+    background: #fef3c7;
+    color: #92400e;
+    font-weight: 700;
+    border: 2px solid #f59e0b;
+}
+
+/* Health Score Card */
+.health-score-content {
+    padding: 1rem 0;
+}
+
+.score-gauge {
+    width: 100%;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.gauge-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    transition: width 0.5s ease;
+}
+
+.score-value {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.score {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.score-label {
+    font-size: 1.5rem;
+    color: #9ca3af;
+}
+
+.score-factors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.factor-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.factor-item.good {
+    background: #d1fae5;
+}
+
+.factor-item.warning {
+    background: #fef3c7;
+}
+
+.factor-icon {
+    font-weight: 700;
+}
+
+.factor-item.good .factor-icon {
+    color: #059669;
+}
+
+.factor-item.warning .factor-icon {
+    color: #d97706;
+}
+
+/* Symptom Tracker */
+.symptom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.symptom-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.symptom-btn:hover {
+    background: #f3f4f6;
+    transform: translateY(-2px);
+}
+
+.symptom-btn.active {
+    background: #dbeafe;
+    border-color: #3b82f6;
+}
+
+.symptom-icon {
+    font-size: 2rem;
+}
+
+.symptom-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Partner Card */
+.partner-content {
+    padding: 1rem 0;
+}
+
+.partner-intro {
+    color: #6b7280;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.partner-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.checkbox-item:hover {
+    background: #f3f4f6;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.partner-tips {
+    padding: 1rem;
+    background: #ede9fe;
+    border-radius: 8px;
+}
+
+.partner-tips h4 {
+    margin-bottom: 0.5rem;
+    color: #6b21a8;
+}
+
+.partner-tips p {
+    font-size: 0.95rem;
+    color: #374151;
+}
+
+/* Reminders Card */
+.reminders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reminder-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.reminder-item.active {
+    background: #dbeafe;
+    border-left: 3px solid #3b82f6;
+}
+
+.reminder-icon {
+    font-size: 1.5rem;
+}
+
+.reminder-info {
+    flex: 1;
+}
+
+.reminder-title {
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.reminder-time {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.action-btn:hover {
+    background: #f3f4f6;
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 2rem;
+}
+
+/* Tips Checklist Modal */
+.tips-checklist h4 {
+    color: #1f2937;
+    margin: 1.5rem 0 0.75rem 0;
+    font-size: 1.125rem;
+}
+
+.tips-checklist h4:first-child {
+    margin-top: 0;
+}
+
+.tips-checklist ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tips-checklist li {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.tips-checklist li:before {
+    content: "•";
+    position: absolute;
+    left: 0.75rem;
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .fertility-dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .calendar-card {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .fertility-dashboard {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .calendar-card {
+        grid-column: span 1;
+    }
+    
+    .stat-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-large {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .stat-large .stat-icon {
+        font-size: 2.5rem;
+    }
+    
+    .stat-large .stat-value {
+        font-size: 2rem;
+    }
+    
+    .fertility-dates {
+        gap: 0.5rem;
+    }
+    
+    .date-item {
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: center;
+    }
+    
+    .ovulation-countdown {
+        padding: 1.5rem;
+    }
+    
+    .countdown-value {
+        font-size: 3rem;
+    }
+    
+    .countdown-label {
+        font-size: 1rem;
+    }
+    
+    .probability-circle {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .probability-value .value {
+        font-size: 2.5rem;
+    }
+    
+    .symptom-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .symptom-btn {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .symptom-icon {
+        font-size: 1.5rem;
+    }
+    
+    .symptom-label {
+        font-size: 0.75rem;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-btn {
+        padding: 1rem;
+    }
+    
+    .calendar-grid {
+        gap: 0.25rem;
+    }
+    
+    .calendar-day {
+        font-size: 0.75rem;
+        padding: 0.25rem;
+    }
+    
+    .calendar-header {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .calendar-legend {
+        gap: 0.75rem;
+        justify-content: center;
+    }
+    
+    .legend-item {
+        font-size: 0.75rem;
+    }
+    
+    .score {
+        font-size: 2.5rem;
+    }
+    
+    .card {
+        padding: 1rem;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .card-header h3 {
+        font-size: 1.125rem;
+    }
+    
+    .welcome-section h1 {
+        font-size: 1.75rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .fertility-info {
+        padding: 0.5rem 0;
+    }
+    
+    .reminder-item {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .reminder-icon {
+        font-size: 1.25rem;
+    }
+    
+    .partner-checklist {
+        gap: 0.5rem;
+    }
+    
+    .checkbox-item {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 1rem 0.75rem;
+    }
+    
+    .welcome-section {
+        margin-bottom: 1.5rem;
+        padding: 1rem 0;
+    }
+    
+    .welcome-section h1 {
+        font-size: 1.5rem;
+    }
+    
+    .subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .fertility-dashboard {
+        gap: 0.75rem;
+    }
+    
+    .card {
+        padding: 0.75rem;
+        border-radius: 12px;
+    }
+    
+    .card-header {
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .card-header h3 {
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .stat-large {
+        padding: 1rem;
+    }
+    
+    .stat-large .stat-icon {
+        font-size: 2rem;
+    }
+    
+    .stat-large .stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .stat-large .stat-label {
+        font-size: 0.875rem;
+    }
+    
+    .stat-row .stat-item {
+        padding: 0.75rem;
+    }
+    
+    .stat-row .stat-value {
+        font-size: 1.25rem;
+    }
+    
+    .ovulation-countdown {
+        padding: 1rem;
+    }
+    
+    .countdown-value {
+        font-size: 2.5rem;
+    }
+    
+    .countdown-label {
+        font-size: 0.875rem;
+    }
+    
+    .probability-circle {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .probability-value .value {
+        font-size: 2rem;
+    }
+    
+    .probability-label {
+        font-size: 0.875rem;
+    }
+    
+    .probability-factors {
+        font-size: 0.75rem;
+    }
+    
+    .factor {
+        padding: 0.375rem;
+    }
+    
+    .tip-category {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .tip-text {
+        font-size: 0.875rem;
+    }
+    
+    .symptom-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.375rem;
+    }
+    
+    .symptom-btn {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .symptom-icon {
+        font-size: 1.25rem;
+    }
+    
+    .symptom-label {
+        font-size: 0.7rem;
+    }
+    
+    .calendar-grid {
+        gap: 0.125rem;
+    }
+    
+    .calendar-day {
+        font-size: 0.7rem;
+        border-radius: 4px;
+    }
+    
+    .calendar-header {
+        padding: 0.375rem;
+        font-size: 0.7rem;
+    }
+    
+    .calendar-nav {
+        gap: 0.5rem;
+    }
+    
+    .calendar-legend {
+        gap: 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    .legend-item {
+        font-size: 0.7rem;
+    }
+    
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .score {
+        font-size: 2rem;
+    }
+    
+    .score-label {
+        font-size: 1.25rem;
+    }
+    
+    .score-factors {
+        gap: 0.5rem;
+    }
+    
+    .factor-item {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .action-btn {
+        padding: 0.75rem;
+    }
+    
+    .action-icon {
+        font-size: 1.5rem;
+    }
+    
+    .reminder-item {
+        padding: 0.5rem;
+    }
+    
+    .reminder-icon {
+        font-size: 1rem;
+    }
+    
+    .reminder-title {
+        font-size: 0.875rem;
+    }
+    
+    .reminder-time {
+        font-size: 0.75rem;
+    }
+    
+    .modal-content {
+        max-width: 95%;
+    }
+    
+    .modal-header {
+        padding: 1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .tips-checklist h4 {
+        font-size: 1rem;
+    }
+    
+    .tips-checklist li {
+        padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .tips-checklist li:before {
+        left: 0.5rem;
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .date-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+

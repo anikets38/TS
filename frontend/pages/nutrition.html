@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Guide - CareNest AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/nutrition.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">👶</div>
+                <span class="logo-text">CareNest AI</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/pages/dashboard.html">Dashboard</a>
+                <a href="/pages/baby-tracking.html">Tracking</a>
+                <a href="/pages/vaccination.html">Vaccination</a>
+                <a href="/pages/pregnancy-guide.html">Pregnancy</a>
+                <a href="/pages/nutrition.html" class="active">Nutrition</a>
+                <a href="/pages/health-awareness.html">Health</a>
+                <a href="#" onclick="logout()" class="btn-primary">Logout</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="section-heading">
+            <h1>🍎 Baby Nutrition Guide</h1>
+            <p>Age-appropriate food recommendations and meal plans for healthy growth</p>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <span class="banner-icon">ℹ️</span>
+            <div class="banner-content">
+                <strong>Nutrition Tips:</strong> Always introduce new foods one at a time and watch for allergic reactions. Consult your pediatrician before starting solid foods.
+            </div>
+        </div>
+
+        <!-- Age Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-age="0-6" onclick="switchAgeGroup('0-6', this)">
+                <span class="tab-icon">👶</span>
+                <span>0-6 Months</span>
+            </button>
+            <button class="tab-btn" data-age="6-8" onclick="switchAgeGroup('6-8', this)">
+                <span class="tab-icon">🍼</span>
+                <span>6-8 Months</span>
+            </button>
+            <button class="tab-btn" data-age="8-12" onclick="switchAgeGroup('8-12', this)">
+                <span class="tab-icon">🥄</span>
+                <span>8-12 Months</span>
+            </button>
+            <button class="tab-btn" data-age="12+" onclick="switchAgeGroup('12+', this)">
+                <span class="tab-icon">🍽️</span>
+                <span>12+ Months</span>
+            </button>
+        </div>
+
+        <!-- Content Container -->
+        <div id="nutritionContent">
+            <!-- Will be populated by JS -->
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/nutrition.js"></script>
+</body>
+</html>
