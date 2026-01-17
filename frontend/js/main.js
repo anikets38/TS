@@ -30,7 +30,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ================================
 // API BASE URL
 // ================================
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://ts-ypbn.onrender.com/api';
 
 // ================================
 // AUTH HELPER FUNCTIONS
