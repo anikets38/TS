@@ -73,49 +73,6 @@ router.post('/chat', async (req, res) => {
         });
     }
 });
-                    'Content-Type': 'application/json'
-                },
-                timeout: 30000 // 30 seconds timeout
-            });
-
-            res.json({
-                success: true,
-                data: {
-                    message: response.data.message || response.data.response || 'AI response received',
-                    mode: mode || 'general',
-                    timestamp: new Date().toISOString()
-                }
-            });
-        } catch (n8nError) {
-            console.error('n8n webhook error:', n8nError.message);
-            
-            // Fallback response if n8n is not available
-            const fallbackMessages = {
-                tracking: 'Tracking AI assistant is being set up. I can help with feeding schedules, sleep patterns, and activity logging.',
-                vaccination: 'Vaccination AI assistant is being set up. I can help with vaccine schedules, reminders, and vaccination records.',
-                nutrition: 'Nutrition AI assistant is being set up. I can provide age-appropriate food recommendations and meal planning guidance.',
-                health: 'Health AI assistant is being set up. I can provide information about common infant health conditions. Always consult a doctor for medical concerns.',
-                general: 'AI assistant is being set up. In the meantime, I can help you with basic queries. What would you like to know?'
-            };
-            
-            res.json({
-                success: true,
-                data: {
-                    message: fallbackMessages[mode] || fallbackMessages.general,
-                    fallback: true,
-                    mode: mode || 'general',
-                    timestamp: new Date().toISOString()
-                }
-            });
-        }
-    } catch (error) {
-        console.error('AI chat error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error processing AI request'
-        });
-    }
-});
 
 // @route   POST /api/ai/summary
 // @desc    Get AI-generated summary of baby's routine
